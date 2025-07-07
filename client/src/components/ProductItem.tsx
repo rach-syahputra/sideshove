@@ -1,5 +1,7 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Button } from "./ui/button";
 
@@ -12,13 +14,32 @@ interface ProductItemProps {
   price: number;
 }
 
-const ProductItem = ({
-  title,
-  slug,
-  image,
-  stock,
-  price,
-}: ProductItemProps) => {
+const ProductItem = ({ title, image, stock, price }: ProductItemProps) => {
+  const router = useRouter();
+
+  const handleCheckout = async () => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/checkouts`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: price,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    console.log("checkout data", data);
+
+    if (data) {
+      router.push(`checkout/${data.data.id}`);
+    }
+  };
+
   return (
     <div className="w-full flex flex-col gap-3">
       <Image
@@ -41,10 +62,10 @@ const ProductItem = ({
       </div>
       {stock > 0 ? (
         <Button
-          asChild
+          onClick={handleCheckout}
           className="bg-gray-900 rounded-none text-white px-3 py-2 w-fit mt-2"
         >
-          <Link href={`/checkout?slug=${slug}`}>CHECKOUT</Link>
+          CHECKOUT
         </Button>
       ) : (
         <Button

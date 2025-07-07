@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import querystring from "querystring";
+import { prisma } from "./utils/prisma";
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.post(
     });
 
     try {
+      // create payment
       const response = await fetch("https://eu-test.oppwa.com/v1/checkouts", {
         method: "POST",
         headers: {
@@ -42,6 +44,15 @@ app.post(
       });
 
       const json = await response.json();
+
+      // store checkout data
+      await prisma.checkout.create({
+        data: {
+          id: json.id,
+          integrity: json.integrity,
+        },
+      });
+
       res.status(200).json({
         message: "Payment created successfully",
         data: json,
@@ -58,6 +69,12 @@ app.get(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
 
+    const checkout = await prisma.checkout.findUnique({
+      where: {
+        id,
+      },
+    });
+
     try {
       const response = await fetch(
         `https://eu-test.oppwa.com/v1/checkouts/${id}/payment?entityId=8ac7a4c79394bdc801939736f17e063d`,
@@ -73,7 +90,49 @@ app.get(
       const json = await response.json();
       res.status(200).json({
         message: "Payment status retrieved successfully",
-        data: json,
+        data: { integrity: checkout?.integrity, ...json },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
+app.get(
+  "/api/checkouts",
+  async (req: Request, res: Response, next: NextFunction) => {
+    const checkouts = await prisma.checkout.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    try {
+      const response = await Promise.all(
+        checkouts.map(async (checkout) => {
+          const res = await fetch(
+            `https://eu-test.oppwa.com/v1/checkouts/${checkout.id}/payment?entityId=8ac7a4c79394bdc801939736f17e063d`,
+            {
+              method: "GET",
+              headers: {
+                Authorization:
+                  "Bearer OGFjN2E0Yzc5Mzk0YmRjODAxOTM5NzM2ZjFhNzA2NDF8enlac1lYckc4QXk6bjYzI1NHNng=",
+              },
+            }
+          );
+
+          const data = await res.json();
+          return {
+            id: checkout.id,
+            status: data.result.description,
+            createdAt: checkout.createdAt,
+          };
+        })
+      );
+
+      res.status(200).json({
+        message: "Orders retrieved successfully",
+        data: response,
       });
     } catch (error) {
       console.error(error);

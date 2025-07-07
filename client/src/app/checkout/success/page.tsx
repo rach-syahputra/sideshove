@@ -15,6 +15,7 @@ const CheckoutSuccessPage = async ({
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/checkouts/${id}/payment`
   );
   const data = await response.json();
+  console.log("success data", data);
 
   return (
     <div className="bg-gray-100 w-screen min-h-svh flex items-center justify-center">
