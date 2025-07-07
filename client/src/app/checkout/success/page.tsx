@@ -15,7 +15,6 @@ const CheckoutSuccessPage = async ({
     `http://localhost:8000/api/checkouts/${id}/payment`
   );
   const data = await response.json();
-  console.log(data);
 
   return (
     <div className="bg-gray-100 w-screen min-h-svh flex items-center justify-center">
