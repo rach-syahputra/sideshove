@@ -12,7 +12,7 @@ const CheckoutSuccessPage = async ({
 }: CheckoutSuccessPageProps) => {
   const id = (await searchParams).id;
   const response = await fetch(
-    process.env.NEXT_PUBLIC_API_BASE_URL + `/checkouts/${id}/payment`
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/checkouts/${id}/payment`
   );
   const data = await response.json();
 

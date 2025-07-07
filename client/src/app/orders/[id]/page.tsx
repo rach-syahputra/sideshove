@@ -9,7 +9,7 @@ interface OrderPageProps {
 const OrderPage = async ({ params }: OrderPageProps) => {
   const productId = (await params).id;
   const response = await fetch(
-    process.env.NEXT_PUBLIC_API_BASE_URL + `/api/checkouts/${productId}/payment`
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/checkouts/${productId}/payment`
   );
   const data = await response.json();
   console.log(data);
