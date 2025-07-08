@@ -50,6 +50,8 @@ app.post(
       await prisma.checkout.create({
         data: {
           id: json.id,
+          amount,
+          currency: "EUR",
           integrity: json.integrity,
           status: "PENDING",
         },
@@ -69,15 +71,15 @@ app.post(
 app.get(
   "/api/checkouts/:id/payment",
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-
-    const checkout = await prisma.checkout.findUnique({
-      where: {
-        id,
-      },
-    });
-
     try {
+      const { id } = req.params;
+
+      const checkout = await prisma.checkout.findUnique({
+        where: {
+          id,
+        },
+      });
+
       const response = await fetch(
         `https://eu-test.oppwa.com/v1/checkouts/${id}/payment?entityId=8ac7a4c79394bdc801939736f17e063d`,
         {
@@ -89,10 +91,27 @@ app.get(
         }
       );
 
-      const json = await response.json();
+      const data = await response.json();
+
+      // update payment status to expired if it's not paid more than 30 minutes
+      if (
+        checkout &&
+        data.result.code !== "000.200.000" &&
+        checkout?.status !== "SUCCESS"
+      ) {
+        await prisma.checkout.update({
+          where: {
+            id: checkout?.id,
+          },
+          data: {
+            status: "EXPIRED",
+          },
+        });
+      }
+
       res.status(200).json({
         message: "Payment status retrieved successfully",
-        data: { integrity: checkout?.integrity, ...json },
+        data: { ...data, checkout },
       });
     } catch (error) {
       console.error(error);
@@ -106,7 +125,7 @@ app.patch(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const { status } = req.body;
+      const { status, currency, brand, holder } = req.body;
 
       const checkout = await prisma.checkout.update({
         where: {
@@ -114,6 +133,10 @@ app.patch(
         },
         data: {
           status: status as STATUS,
+          currency,
+          brand,
+          holder,
+          paidAt: status === "SUCCESS" ? new Date() : null,
         },
       });
 
@@ -169,9 +192,7 @@ app.get(
           }
 
           return {
-            id: checkout.id,
-            status: checkout.status,
-            createdAt: checkout.createdAt,
+            ...checkout,
           };
         })
       );

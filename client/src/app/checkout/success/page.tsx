@@ -27,6 +27,9 @@ const CheckoutSuccessPage = async ({
         },
         body: JSON.stringify({
           status: "SUCCESS",
+          currency: data.data.currency,
+          brand: data.data.paymentBrand,
+          holder: data.data.card.holder,
         }),
       }
     );

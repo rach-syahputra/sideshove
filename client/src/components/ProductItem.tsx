@@ -33,8 +33,6 @@ const ProductItem = ({ title, image, stock, price }: ProductItemProps) => {
 
     const data = await response.json();
 
-    console.log("checkout data", data);
-
     if (data) {
       router.push(`checkout/${data.data.id}`);
     }
