@@ -1,9 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import { Payment } from "@/lib/types/transaction";
 import { formatDate } from "@/lib/utils";
+import { useTransactionContext } from "@/context/TransactionContext";
 import {
   Table,
   TableBody,
@@ -19,7 +18,7 @@ interface TransactionTableProps {
 }
 
 const TransactionTable = ({ payments }: TransactionTableProps) => {
-  const router = useRouter();
+  const { fetchTransactions } = useTransactionContext();
 
   const handleCapturePayment = async (paymentId: string) => {
     const response = await fetch(
@@ -38,56 +37,98 @@ const TransactionTable = ({ payments }: TransactionTableProps) => {
     const data = await response.json();
 
     if (data.data.result.code === "000.100.110") {
-      router.refresh();
+      fetchTransactions();
+    }
+  };
+
+  const handleRefundPayment = async (paymentId: string) => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments/${paymentId}?paymentType=RF`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: 110,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.data.result.code === "000.100.110") {
+      fetchTransactions();
     }
   };
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>ID</TableHead>
-          <TableHead>Brand</TableHead>
-          <TableHead>Amount</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Created At</TableHead>
-          <TableHead className="text-right">Action</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {payments?.length > 0 &&
-          payments.map((payment, index) => (
-            <TableRow key={index}>
-              <TableCell className="text-xs">{payment.id}</TableCell>
-              <TableCell>{payment.brand ?? ""}</TableCell>
-              <TableCell>{payment.amount ?? ""}</TableCell>
-              <TableCell>{payment.type ?? ""}</TableCell>
-              <TableCell>{formatDate(new Date(payment.createdAt))}</TableCell>
-              {payment.type === "PA" ? (
-                <TableCell className=" text-right">
-                  <Button onClick={() => handleCapturePayment(payment.id)}>
-                    Capture
-                  </Button>
+    <>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>Brand</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Created At</TableHead>
+            <TableHead className="text-right">Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {payments?.length > 0 &&
+            payments.map((payment, index) => (
+              <TableRow key={index}>
+                <TableCell className="text-xs">{payment.id}</TableCell>
+                <TableCell>{payment.brand ?? ""}</TableCell>
+                <TableCell>{payment.amount ?? ""}</TableCell>
+                <TableCell>
+                  {payment.type === "PA" ? (
+                    <span className="px-2 py-1 font-medium rounded-md bg-amber-400">
+                      PRE-AUTHORIZE
+                    </span>
+                  ) : payment.type === "CP" ? (
+                    <span className="px-2 py-1 font-medium rounded-md bg-green-400">
+                      CAPTURE
+                    </span>
+                  ) : payment.type === "RF" ? (
+                    <span className="px-2 py-1 font-medium rounded-md bg-red-400">
+                      REFUND
+                    </span>
+                  ) : (
+                    ""
+                  )}
                 </TableCell>
-              ) : payment.type === "CP" ? (
-                <TableCell className="text-right">
-                  <Button
-                    onClick={() => {}}
-                    variant="destructive"
-                    className="text-white"
-                  >
-                    Refund
-                  </Button>
-                </TableCell>
-              ) : (
-                <TableCell className="text-muted-foreground text-right">
-                  No Action
-                </TableCell>
-              )}
-            </TableRow>
-          ))}
-      </TableBody>
-    </Table>
+                <TableCell>{formatDate(new Date(payment.createdAt))}</TableCell>
+                {payment.type === "PA" && payment.status !== "CAPTURED" ? (
+                  <TableCell className=" text-right">
+                    <Button
+                      onClick={() => handleCapturePayment(payment.id)}
+                      className="h-9"
+                    >
+                      Capture
+                    </Button>
+                  </TableCell>
+                ) : payment.type === "CP" && payment.status !== "REFUNDED" ? (
+                  <TableCell className="text-right">
+                    <Button
+                      onClick={() => handleRefundPayment(payment.id)}
+                      variant="destructive"
+                      className="text-white h-9 "
+                    >
+                      Refund
+                    </Button>
+                  </TableCell>
+                ) : (
+                  <TableCell className="text-muted-foreground text-right">
+                    No Action
+                  </TableCell>
+                )}
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </>
   );
 };
 

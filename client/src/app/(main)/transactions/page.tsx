@@ -1,31 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-import { Payment } from "@/lib/types/transaction";
+import { useTransactionContext } from "@/context/TransactionContext";
 import TransactionTable from "@/components/TransactionTable";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const TransactionsPage = () => {
-  const [payments, setPayments] = useState<Payment[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  const fetchTransactions = async () => {
-    setIsLoading(true);
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments`
-    );
-
-    const data = await response.json();
-
-    setPayments(data.data);
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
+  const { isLoading, payments, type, setType } = useTransactionContext();
 
   return (
     <main>
@@ -39,6 +28,22 @@ const TransactionsPage = () => {
               Review your recent orders and payments.
             </p>
           </div>
+
+          <Select value={type} onValueChange={setType}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Payment Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Payment Type</SelectLabel>
+                <SelectItem value="PA">Pre-Authorize</SelectItem>
+                <SelectItem value="CP">Capture</SelectItem>
+                <SelectItem value="DB">Debit</SelectItem>
+                <SelectItem value="RF">Refund</SelectItem>
+                <SelectItem value="ALL">All</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
 
           {isLoading ? (
             <div className="mx-auto py-4 flex items-center justify-center">

@@ -81,8 +81,13 @@ app.post(
 app.get(
   "/api/payments",
   async (req: Request, res: Response, next: NextFunction) => {
+    const { type } = req.query;
+
     try {
       const payments = await prisma.payment.findMany({
+        where: {
+          ...(type && { type: type as PaymentType }),
+        },
         orderBy: {
           createdAt: "desc",
         },
@@ -98,7 +103,7 @@ app.get(
   }
 );
 
-// capture payment
+// manage payment (capture, refund, etc)
 app.post(
   "/api/payments/:id",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -130,7 +135,7 @@ app.post(
 
       const json = await response.json();
 
-      // create new captured payment
+      // create new captured or refunded payment
       if (json.result.code === "000.100.110") {
         const payment = await prisma.payment.findUnique({
           where: {
@@ -138,16 +143,53 @@ app.post(
           },
         });
 
-        await prisma.payment.create({
-          data: {
-            id: json.id,
-            referencedId: id,
-            amount,
-            status: "CAPTURED",
-            type: "CP",
-            brand: payment?.brand,
-          },
-        });
+        if (paymentType === "CP") {
+          // update referenced payment status
+          await prisma.payment.update({
+            where: {
+              id,
+            },
+            data: {
+              status: "CAPTURED",
+            },
+          });
+
+          // create captured payment
+          await prisma.payment.create({
+            data: {
+              id: json.id,
+              referencedId: id,
+              amount,
+              status: "CAPTURED",
+              type: "CP",
+              brand: payment?.brand,
+            },
+          });
+        }
+
+        if (paymentType === "RF") {
+          // update referenced payment status
+          await prisma.payment.update({
+            where: {
+              id,
+            },
+            data: {
+              status: "REFUNDED",
+            },
+          });
+
+          // create refunded payment
+          await prisma.payment.create({
+            data: {
+              id: json.id,
+              referencedId: id,
+              amount,
+              status: "REFUNDED",
+              type: "RF",
+              brand: payment?.brand,
+            },
+          });
+        }
       }
 
       res.status(200).json({

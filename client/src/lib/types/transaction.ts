@@ -1,10 +1,10 @@
-type PaymentStatusType =
+export type PaymentStatusType =
   | "PENDING"
   | "PAID"
   | "EXPIRED"
   | "REFUNDED"
   | "CAPTURED";
-type PaymentType = "DB" | "PA" | "CP" | "RF";
+export type PaymentType = "DB" | "PA" | "CP" | "RF";
 
 export interface Payment {
   id: string;
