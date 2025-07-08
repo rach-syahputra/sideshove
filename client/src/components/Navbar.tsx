@@ -7,7 +7,7 @@ const Navbar = () => {
         <Link href="/" className="font-bold">
           SIDESHOV
         </Link>
-        <Link href="orders" className="hover:underline">
+        <Link href="transactions" className="hover:underline">
           Transaction History
         </Link>
       </div>

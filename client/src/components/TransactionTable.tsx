@@ -1,4 +1,8 @@
-import { Order } from "@/lib/types/order";
+"use client";
+
+import { useRouter } from "next/navigation";
+
+import { Payment } from "@/lib/types/transaction";
 import { formatDate } from "@/lib/utils";
 import {
   Table,
@@ -11,13 +15,31 @@ import {
 import { Button } from "./ui/button";
 
 interface TransactionTableProps {
-  orders: Order[];
+  payments: Payment[];
 }
 
-const TransactionTable = ({ orders }: TransactionTableProps) => {
-  const handlePayNow = (id: string) => {
-    // full checkout page reload to ensure script re-attaching
-    window.location.href = `checkout/${id}`;
+const TransactionTable = ({ payments }: TransactionTableProps) => {
+  const router = useRouter();
+
+  const handleCapturePayment = async (paymentId: string) => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments/${paymentId}?paymentType=CP`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: 110,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.data.result.code === "000.100.110") {
+      router.refresh();
+    }
   };
 
   return (
@@ -25,50 +47,36 @@ const TransactionTable = ({ orders }: TransactionTableProps) => {
       <TableHeader>
         <TableRow>
           <TableHead>ID</TableHead>
-          <TableHead>Holder</TableHead>
           <TableHead>Brand</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Currency</TableHead>
+          <TableHead>Amount</TableHead>
+          <TableHead>Type</TableHead>
           <TableHead>Created At</TableHead>
-          <TableHead>Paid At</TableHead>
           <TableHead className="text-right">Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {orders?.length > 0 &&
-          orders.map((order, index) => (
+        {payments?.length > 0 &&
+          payments.map((payment, index) => (
             <TableRow key={index}>
-              <TableCell className="text-xs">{order.id}</TableCell>
-              <TableCell>{order.holder ?? ""}</TableCell>
-              <TableCell>{order.brand ?? ""}</TableCell>
-              <TableCell>
-                {order.status === "PENDING" ? (
-                  <span className="px-2 text-xs py-1 rounded-sm bg-amber-400">
-                    {order.status}
-                  </span>
-                ) : order.status === "SUCCESS" ? (
-                  <span className="px-2 text-xs py-1 rounded-sm bg-green-400">
-                    {order.status}
-                  </span>
-                ) : (
-                  <span className="px-2 text-xs py-1 rounded-sm bg-red-400">
-                    {order.status}
-                  </span>
-                )}
-              </TableCell>
-              <TableCell>{order.currency ?? ""}</TableCell>
-              <TableCell>{formatDate(new Date(order.createdAt))}</TableCell>
-              <TableCell>
-                {" "}
-                {order.paidAt ? formatDate(new Date(order.paidAt)) : ""}
-              </TableCell>
-              {order.status === "PENDING" ? (
+              <TableCell className="text-xs">{payment.id}</TableCell>
+              <TableCell>{payment.brand ?? ""}</TableCell>
+              <TableCell>{payment.amount ?? ""}</TableCell>
+              <TableCell>{payment.type ?? ""}</TableCell>
+              <TableCell>{formatDate(new Date(payment.createdAt))}</TableCell>
+              {payment.type === "PA" ? (
+                <TableCell className=" text-right">
+                  <Button onClick={() => handleCapturePayment(payment.id)}>
+                    Capture
+                  </Button>
+                </TableCell>
+              ) : payment.type === "CP" ? (
                 <TableCell className="text-right">
                   <Button
-                    onClick={() => handlePayNow(order.id)}
-                    className="w-fit px-3 h-7 text-sm place-self-end"
+                    onClick={() => {}}
+                    variant="destructive"
+                    className="text-white"
                   >
-                    Pay Now
+                    Refund
                   </Button>
                 </TableCell>
               ) : (

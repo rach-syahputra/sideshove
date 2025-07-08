@@ -2,29 +2,29 @@
 
 import { useEffect, useState } from "react";
 
-import { Order } from "@/lib/types/order";
+import { Payment } from "@/lib/types/transaction";
 import TransactionTable from "@/components/TransactionTable";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
-const OrdersPage = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
+const TransactionsPage = () => {
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const fetchOrders = async () => {
+  const fetchTransactions = async () => {
     setIsLoading(true);
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/checkouts`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments`
     );
 
     const data = await response.json();
 
-    setOrders(data.data);
+    setPayments(data.data);
     setIsLoading(false);
   };
 
   useEffect(() => {
-    fetchOrders();
+    fetchTransactions();
   }, []);
 
   return (
@@ -44,12 +44,12 @@ const OrdersPage = () => {
             <div className="mx-auto py-4 flex items-center justify-center">
               <LoadingSpinner label="Collecting transactions..." />
             </div>
-          ) : orders.length === 0 ? (
+          ) : payments.length === 0 ? (
             <p className="text-sm mx-auto py-6 text-muted-foreground">
               No transactions.
             </p>
           ) : (
-            <TransactionTable orders={orders} />
+            <TransactionTable payments={payments} />
           )}
         </div>
       </div>
@@ -57,4 +57,4 @@ const OrdersPage = () => {
   );
 };
 
-export default OrdersPage;
+export default TransactionsPage;

@@ -13,22 +13,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum STATUS {
+enum PaymentStatus {
   PENDING
-  SUCCESS
+  PAID
+  CAPTURED
+  REFUNDED
   EXPIRED
 }
 
-model Checkout {
-  id        String    @id @default(uuid())
-  brand     String?
-  amount    Int
-  currency  String?
-  holder    String?
-  integrity String
-  status    STATUS
-  paidAt    DateTime? @map("paid_at")
-  createdAt DateTime  @default(now()) @map("created_at")
+enum PaymentType {
+  DB
+  PA
+  CP
+  RF
+}
 
-  @@map("checkouts")
+enum RefundStatus {
+  PENDING
+  COMPLETED
+}
+
+model Payment {
+  id           String        @id @default(uuid())
+  referencedId String?
+  brand        String?
+  amount       Float
+  type         PaymentType
+  currency     String?
+  integrity    String?
+  status       PaymentStatus
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @default(now()) @map("updated_at")
+  Refund       Refund[]
+
+  @@map("payments")
+}
+
+model Refund {
+  id        String       @id @default(uuid())
+  paymentId String
+  amount    Float
+  status    RefundStatus
+  reason    String
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @default(now()) @map("updated_at")
+
+  payment Payment @relation(fields: [paymentId], references: [id])
+
+  @@map("refunds")
 }

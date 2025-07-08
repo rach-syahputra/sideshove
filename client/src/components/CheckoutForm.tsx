@@ -1,140 +1,191 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Script from "next/script";
-import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { Order } from "@/lib/types/order";
-import { Button } from "./ui/button";
+import { paymentFormSchema } from "@/lib/validations/payment";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
-interface CheckoutFormProps {
-  id: string;
-}
-const CheckoutForm = ({ id }: CheckoutFormProps) => {
+const CheckoutForm = () => {
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement | null>(null);
-  const [checkout, setCheckout] = useState<Order | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const fetchPaymentForm = async () => {
+  const form = useForm<z.infer<typeof paymentFormSchema>>({
+    resolver: zodResolver(paymentFormSchema),
+    defaultValues: {
+      brand: "VISA",
+      number: "",
+      expiryDate: "",
+      holder: "",
+      cvv: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof paymentFormSchema>) => {
+    const expiryMonth = values.expiryDate.slice(0, 2);
+    const expiryYear = "20" + values.expiryDate.slice(2, 4);
+
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/checkouts/${id}/payment`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments?paymentType=PA`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: 110,
+          brand: values.brand,
+          number: values.number,
+          holder: values.holder,
+          expiryMonth,
+          expiryYear,
+          cvv: values.cvv,
+        }),
+      }
     );
 
     const data = await response.json();
-    setCheckout(data.data.checkout);
 
-    if (data.data.result.code !== "000.200.000") {
-      return router.push(`/checkout/success?id=${id}`);
+    if (data.data.result.code === "000.100.110") {
+      router.push("/");
     }
   };
 
-  useEffect(() => {
-    fetchPaymentForm();
-  }, []);
-
-  useEffect(() => {
-    const form = formRef.current;
-
-    if (form?.innerHTML.trim() !== "") {
-      setIsLoading(false);
-    }
-  }, [formRef]);
-
   return (
-    <div className="max-w-5xl min-h-svh mx-auto flex flex-col lg:grid lg:grid-cols-3 gap-8 lg:gap-3 py-8">
-      <div className="flex mx-auto flex-col lg:pr-8 w-full items-center justify-start lg:col-span-1 gap-2 max-lg:max-w-96 lg:border-r-[1px] lg:border-gray-200">
-        <h2 className="text-2xl font-bold">Transaction Detail</h2>
-        <div className="flex w-full my-4 items-center flex-col gap-2">
-          <div className="flex w-full items-center justify-between gap-2">
-            <span className="text-gray-500 text-sm font-semibold">Amount:</span>
-            <span className="font-semibold">{checkout?.amount}</span>
-          </div>
-          <div className="flex w-full items-center justify-between gap-2">
-            <span className="text-gray-500 text-sm font-semibold">
-              Currency:
-            </span>
-            <span className="font-semibold">{checkout?.currency}</span>
-          </div>
-        </div>
-        <p className="text-sm text-gray-500 text-center">
-          You can pay later by visiting transaction history.
+    <div className="flex p-4 flex-col lg:pl-8 items-center justify-start gap-6 lg:col-span-2">
+      <div className="flex text-center flex-col gap-1">
+        <h1 className="text-2xl font-bold">Payment Form</h1>
+        <p className="text-sm text-gray-500">
+          Complete your order with secure checkout.
         </p>
-        <Button asChild variant="outline" className="w-full">
-          <Link href="/orders">View Transaction History</Link>
-        </Button>
-        <Button asChild variant="ghost" className="w-full">
-          <Link href="/">Back to Shopping</Link>
-        </Button>
       </div>
 
-      <div className="flex flex-col lg:pl-8 items-center justify-start gap-6 lg:col-span-2">
-        <div className="flex text-center flex-col gap-1">
-          <h1 className="text-2xl font-bold">Payment Form</h1>
-          <p className="text-sm text-gray-500">
-            Complete your order with secure checkout.
-          </p>
-        </div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 w-full"
+        >
+          <FormField
+            control={form.control}
+            name="brand"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a verified email to display" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="VISA">Visa</SelectItem>
+                    <SelectItem value="MASTER">Master</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <div>
-          <form
-            action={process.env.NEXT_PUBLIC_BASE_URL + "/checkout/success"}
-            method="post"
-            className="paymentWidgets"
-            data-brands="VISA MASTER AMEX"
-          ></form>
-        </div>
+          <FormField
+            control={form.control}
+            name="number"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Card Number</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
 
-        {id && checkout && !isLoading ? (
-          <>
-            <Script src="https://code.jquery.com/jquery-3.6.0.min.js" />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <Script id="wpwl-options">
-              {`
-              var wpwlOptions = {
-                style: "plain",
-                billingAddress: {
-                  country: "US",
-                  state: "NY",
-                  city: "New York",
-                  street1: "111 6th Avenu",
-                  street2: "",
-                  postcode: "12312"
-                },
-                forceCardHolderEqualsBillingName: true,
-                showCVVHint: true,
-                brandDetection: true,
-                onReady: function(){ 
-                  $(".wpwl-group-cardNumber").after($(".wpwl-group-brand").detach());
-                  $(".wpwl-group-cvv").after( $(".wpwl-group-cardHolder").detach());
-                  var visa = $(".wpwl-brand:first").clone().removeAttr("class").attr("class", "wpwl-brand-card wpwl-brand-custom wpwl-brand-VISA")
-                  var master = $(visa).clone().removeClass("wpwl-brand-VISA").addClass("wpwl-brand-MASTER");
-                  $(".wpwl-brand:first").after( $(master)).after( $(visa));
-                  var imageUrl = "https://eu-test.oppwa.com/v1/static/" + wpwl.cacheVersion + "/img/brand.png";
-                  $(".wpwl-brand-custom").css("background-image", "url(" + imageUrl + ")");
-                  $(".wpwl-button").css("width", "100%");
-                  $(".wpwl-button-pay").css("border-radius", "8px");
-                  $(".wpwl-button-pay").css("background-color", "oklch(0.205 0 0)");
-                  $(".wpwl-button-pay").css("border-color", "oklch(0.205 0 0)");
-                },
-                onChangeBrand: function(e){
-                  $(".wpwl-brand-custom").css("opacity", "0.3");
-                  $(".wpwl-brand-" + e).css("opacity", "1"); 
-                }
-              }
-            `}
-            </Script>
-            <Script
-              src={`https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=${id}`}
-              integrity={checkout.integrity}
-              crossOrigin="anonymous"
-            />
-          </>
-        ) : (
-          <p className="text-sm text-gray-600">Loading your payment...</p>
-        )}
-      </div>
+          <FormField
+            control={form.control}
+            name="expiryDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Expiry Date</FormLabel>
+                <FormControl>
+                  <InputOTP maxLength={4} {...field}>
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                    </InputOTPGroup>
+                    <div>/</div>
+                    <InputOTPGroup>
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                    </InputOTPGroup>
+                  </InputOTP>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="holder"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Card Holder</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="cvv"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>CVV</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button type="submit" className="w-full">
+            Pay
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 };
