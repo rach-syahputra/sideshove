@@ -2,15 +2,18 @@
 
 import { useEffect, useState } from "react";
 
-import { formatDate } from "@/lib/utils";
 import { Order } from "@/lib/types/order";
 import Navbar from "@/components/Navbar";
-import { Button } from "@/components/ui/button";
+import TransactionTable from "@/components/TransactionTable";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchOrders = async () => {
+    setIsLoading(true);
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/checkouts`
     );
@@ -18,11 +21,7 @@ const OrdersPage = () => {
     const data = await response.json();
 
     setOrders(data.data);
-  };
-
-  const handlePayNow = (id: string) => {
-    // full checkout page reload to ensure script re-attaching
-    window.location.href = `checkout/${id}`;
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -43,58 +42,16 @@ const OrdersPage = () => {
             </p>
           </div>
 
-          {orders.length === 0 ? (
-            <div className="text-gray-400 text-sm font-semibold">
-              Collecting transaction history...
+          {isLoading ? (
+            <div className="mx-auto py-4 flex items-center justify-center">
+              <LoadingSpinner label="Collecting transactions..." />
             </div>
+          ) : orders.length === 0 ? (
+            <p className="text-sm mx-auto py-6 text-muted-foreground">
+              No transactions.
+            </p>
           ) : (
-            <>
-              <div className="grid text-sm grid-cols-5 items-center justify-between w-full gap-4">
-                <span className="col-span-2 font-bold text-gray-600">ID</span>
-                <span className="font-bold text-gray-600">STATUS</span>
-                <span className="font-bold text-gray-600">CREATED AT</span>
-                <span className="font-bold text-gray-600 place-self-end">
-                  ACTION
-                </span>
-              </div>
-              {orders.map((order, index) => (
-                <div
-                  key={index}
-                  className="grid text-sm grid-cols-5 items-center justify-between w-full gap-4"
-                >
-                  <span className="col-span-2">{order.id}</span>
-
-                  {order.status === "PENDING" ? (
-                    <span className="px-3 text-sm py-2 w-fit rounded-md bg-amber-400">
-                      PENDING
-                    </span>
-                  ) : order.status === "SUCCESS" ? (
-                    <span className="px-3 text-sm py-2 w-fit rounded-md bg-green-400">
-                      SUCCESS
-                    </span>
-                  ) : (
-                    <span className="px-3 text-sm py-2 w-fit rounded-md bg-red-400">
-                      EXPIRED
-                    </span>
-                  )}
-
-                  <span>{formatDate(new Date(order.createdAt))}</span>
-
-                  {order.status === "PENDING" ? (
-                    <Button
-                      onClick={() => handlePayNow(order.id)}
-                      className="w-fit place-self-end"
-                    >
-                      Pay Now
-                    </Button>
-                  ) : (
-                    <span className="w-fit place-self-end text-gray-600">
-                      No Action
-                    </span>
-                  )}
-                </div>
-              ))}
-            </>
+            <TransactionTable orders={orders} />
           )}
         </div>
       </div>
