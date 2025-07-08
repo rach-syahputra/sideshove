@@ -69,7 +69,7 @@ const CheckoutForm = () => {
     const data = await response.json();
 
     if (data.data.result.code === "000.100.110") {
-      router.push("/");
+      router.push("/transactions");
     }
   };
 
@@ -181,7 +181,11 @@ const CheckoutForm = () => {
             )}
           />
 
-          <Button type="submit" className="w-full">
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting}
+            className="w-full"
+          >
             Pay
           </Button>
         </form>
