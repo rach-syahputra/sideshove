@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 import { formatDate } from "@/lib/utils";
 import { Order } from "@/lib/types/order";
@@ -9,7 +8,6 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 
 const OrdersPage = () => {
-  const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
 
   const fetchOrders = async () => {
@@ -23,7 +21,8 @@ const OrdersPage = () => {
   };
 
   const handlePayNow = (id: string) => {
-    router.push(`checkout/${id}`);
+    // full checkout page reload to ensure script re-attaching
+    window.location.href = `checkout/${id}`;
   };
 
   useEffect(() => {
@@ -65,7 +64,7 @@ const OrdersPage = () => {
                 >
                   <span className="col-span-2">{order.id}</span>
 
-                  {order.status === "transaction pending" ? (
+                  {order.status.code === "000.200.000" ? (
                     <span className="px-3 text-sm py-2 w-fit rounded-md bg-amber-400">
                       PENDING
                     </span>
@@ -77,7 +76,7 @@ const OrdersPage = () => {
 
                   <span>{formatDate(new Date(order.createdAt))}</span>
 
-                  {order.status === "transaction pending" ? (
+                  {order.status.code === "000.200.000" ? (
                     <Button
                       onClick={() => handlePayNow(order.id)}
                       className="w-fit place-self-end"

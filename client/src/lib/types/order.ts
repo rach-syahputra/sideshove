@@ -1,5 +1,8 @@
 export interface Order {
   id: string;
-  status: string;
+  status: {
+    code: string;
+    description: string;
+  };
   createdAt: string;
 }

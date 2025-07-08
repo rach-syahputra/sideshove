@@ -1,14 +1,17 @@
 "use client";
 
-import Script from "next/script";
-import { Button } from "./ui/button";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import Script from "next/script";
+import Link from "next/link";
+
+import { Button } from "./ui/button";
 
 interface CheckoutFormProps {
   id: string;
 }
 const CheckoutForm = ({ id }: CheckoutFormProps) => {
+  const router = useRouter();
   const formRef = useRef<HTMLFormElement | null>(null);
   const [integrity, setIntegrity] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -19,13 +22,17 @@ const CheckoutForm = ({ id }: CheckoutFormProps) => {
     );
 
     const data = await response.json();
-    console.log("data", data);
+
+    if (data?.data?.result?.code !== "000.200.000") {
+      return router.push(`/checkout/success?id=${id}`);
+    }
+
     setIntegrity(data.data.integrity);
   };
 
   useEffect(() => {
     fetchPaymentForm();
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     const form = formRef.current;
@@ -47,6 +54,7 @@ const CheckoutForm = ({ id }: CheckoutFormProps) => {
       <div>
         <form
           action={process.env.NEXT_PUBLIC_BASE_URL + "/checkout/success"}
+          method="post"
           className="paymentWidgets"
           data-brands="VISA MASTER AMEX"
         ></form>

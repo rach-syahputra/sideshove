@@ -124,7 +124,10 @@ app.get(
           const data = await res.json();
           return {
             id: checkout.id,
-            status: data.result.description,
+            status: {
+              code: data.result.code,
+              description: data.result.description,
+            },
             createdAt: checkout.createdAt,
           };
         })
