@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import querystring from "querystring";
 import { prisma } from "./utils/prisma";
+import { STATUS } from "@prisma/client";
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.post(
         data: {
           id: json.id,
           integrity: json.integrity,
+          status: "PENDING",
         },
       });
 
@@ -98,6 +100,34 @@ app.get(
   }
 );
 
+// update payment status
+app.patch(
+  "/api/checkouts/:id/payment",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      const checkout = await prisma.checkout.update({
+        where: {
+          id,
+        },
+        data: {
+          status: status as STATUS,
+        },
+      });
+
+      res.status(200).json({
+        message: "Payment updated successfully",
+        data: checkout,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
+// get checkouts data
 app.get(
   "/api/checkouts",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -122,12 +152,25 @@ app.get(
           );
 
           const data = await res.json();
+
+          // update payment status to expired if it's not paid more than 30 minutes
+          if (
+            data.result.code !== "000.200.000" &&
+            checkout.status !== "SUCCESS"
+          ) {
+            await prisma.checkout.update({
+              where: {
+                id: checkout.id,
+              },
+              data: {
+                status: "EXPIRED",
+              },
+            });
+          }
+
           return {
             id: checkout.id,
-            status: {
-              code: data.result.code,
-              description: data.result.description,
-            },
+            status: checkout.status,
             createdAt: checkout.createdAt,
           };
         })

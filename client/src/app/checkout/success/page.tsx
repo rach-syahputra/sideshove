@@ -16,6 +16,22 @@ const CheckoutSuccessPage = async ({
   );
   const data = await response.json();
 
+  // update payment status to success
+  if (data.data.result.code === "000.100.110") {
+    await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/checkouts/${id}/payment`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: "SUCCESS",
+        }),
+      }
+    );
+  }
+
   return (
     <div className="bg-gray-100 w-screen min-h-svh flex items-center justify-center">
       <div className="rounded-md min-w-96 shadow text-center bg-white p-4">

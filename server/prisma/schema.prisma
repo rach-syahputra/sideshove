@@ -13,9 +13,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum STATUS {
+  PENDING
+  SUCCESS
+  EXPIRED
+}
+
 model Checkout {
   id        String   @id @default(uuid())
   integrity String
+  status    STATUS
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("checkouts")

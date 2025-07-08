@@ -64,19 +64,23 @@ const OrdersPage = () => {
                 >
                   <span className="col-span-2">{order.id}</span>
 
-                  {order.status.code === "000.200.000" ? (
+                  {order.status === "PENDING" ? (
                     <span className="px-3 text-sm py-2 w-fit rounded-md bg-amber-400">
                       PENDING
                     </span>
-                  ) : (
+                  ) : order.status === "SUCCESS" ? (
                     <span className="px-3 text-sm py-2 w-fit rounded-md bg-green-400">
                       SUCCESS
+                    </span>
+                  ) : (
+                    <span className="px-3 text-sm py-2 w-fit rounded-md bg-red-400">
+                      EXPIRED
                     </span>
                   )}
 
                   <span>{formatDate(new Date(order.createdAt))}</span>
 
-                  {order.status.code === "000.200.000" ? (
+                  {order.status === "PENDING" ? (
                     <Button
                       onClick={() => handlePayNow(order.id)}
                       className="w-fit place-self-end"
@@ -84,7 +88,9 @@ const OrdersPage = () => {
                       Pay Now
                     </Button>
                   ) : (
-                    <span className="w-fit place-self-end">PAID</span>
+                    <span className="w-fit place-self-end text-gray-600">
+                      No Action
+                    </span>
                   )}
                 </div>
               ))}
