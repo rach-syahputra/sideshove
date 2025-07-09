@@ -22,7 +22,7 @@ const TransactionTable = ({ payments }: TransactionTableProps) => {
 
   const handleCapturePayment = async (paymentId: string) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments/${paymentId}?paymentType=CP`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments/${paymentId}?type=CP`,
       {
         method: "POST",
         headers: {
@@ -43,7 +43,7 @@ const TransactionTable = ({ payments }: TransactionTableProps) => {
 
   const handleRefundPayment = async (paymentId: string) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments/${paymentId}?paymentType=RF`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments/${paymentId}?type=RF`,
       {
         method: "POST",
         headers: {

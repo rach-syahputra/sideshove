@@ -1,207 +1,41 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, { Express, Request, Response } from "express";
 import cors from "cors";
-import dotenv from "dotenv";
-import querystring from "querystring";
-import { prisma } from "./utils/prisma";
-import { PaymentType } from "@prisma/client";
 
-dotenv.config();
+// routes
+import PaymentRoute from "./routes/payment.route";
+import { PORT } from "./config";
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+export default class App {
+  private app: Express;
 
-const PORT = process.env.PORT || 8000;
+  constructor() {
+    this.app = express();
+    this.configure();
+    this.routes();
+  }
 
-app.get("/", (req: Request, res: Response, next: NextFunction) => {
-  res.status(200).json({
-    message: "Welcome to the API",
-  });
-});
+  private configure(): void {
+    this.app.use(cors());
+    this.app.use(express.json());
+  }
 
-// create payment
-app.post(
-  "/api/payments",
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { amount, brand, number, holder, expiryMonth, expiryYear, cvv } =
-      req.body;
-    const { paymentType } = req.query;
-    const data = querystring.stringify({
-      entityId: "8ac7a4c79394bdc801939736f17e063d",
-      amount: String(amount),
-      currency: "EUR",
-      paymentBrand: brand,
-      paymentType: (paymentType as string) || "PA",
-      "card.number": number,
-      "card.holder": holder,
-      "card.expiryMonth": expiryMonth,
-      "card.expiryYear": expiryYear,
-      "card.cvv": cvv,
+  private routes(): void {
+    const paymentRoute = new PaymentRoute();
+
+    this.app.use("/api/payments", paymentRoute.getRouter());
+    this.app.get("/api", (req: Request, res: Response) => {
+      res.status(200).json({
+        message: "Sideshove API service",
+      });
     });
-
-    try {
-      // create payment
-      const response = await fetch("https://eu-test.oppwa.com/v1/payments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization:
-            "Bearer OGFjN2E0Yzc5Mzk0YmRjODAxOTM5NzM2ZjFhNzA2NDF8enlac1lYckc4QXk6bjYzI1NHNng=",
-        },
-        body: data,
-      });
-
-      const json = await response.json();
-
-      // store paid payment data
-      if (json.result.code === "000.100.110") {
-        await prisma.payment.create({
-          data: {
-            id: json.id,
-            amount,
-            currency: "EUR",
-            status: "PAID",
-            type: (paymentType as PaymentType) || "PA",
-            brand,
-          },
-        });
-      }
-
-      res.status(200).json({
-        message: "Payment created successfully",
-        data: json,
-      });
-    } catch (error) {
-      console.error(error);
-    }
   }
-);
-
-// get payments
-app.get(
-  "/api/payments",
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { type } = req.query;
-
-    try {
-      const payments = await prisma.payment.findMany({
-        where: {
-          ...(type && { type: type as PaymentType }),
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
-
-      res.status(200).json({
-        message: "Payments retrieved successfully",
-        data: payments,
-      });
-    } catch (error) {
-      console.error(error);
-    }
+  public getServer(): Express {
+    return this.app;
   }
-);
 
-// manage payment (capture, refund, etc)
-app.post(
-  "/api/payments/:id",
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-    const { paymentType } = req.query;
-    const { amount } = req.body;
-
-    const data = querystring.stringify({
-      entityId: "8ac7a4c79394bdc801939736f17e063d",
-      amount: String(amount),
-      currency: "EUR",
-      paymentType: (paymentType as string) || "CP",
+  public start(): void {
+    this.app.listen(PORT, () => {
+      console.log(`  ➜  [API] Local:   http://localhost:${PORT}/`);
     });
-
-    try {
-      // create payment
-      const response = await fetch(
-        `https://eu-test.oppwa.com/v1/payments/${id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Authorization:
-              "Bearer OGFjN2E0Yzc5Mzk0YmRjODAxOTM5NzM2ZjFhNzA2NDF8enlac1lYckc4QXk6bjYzI1NHNng=",
-          },
-          body: data,
-        }
-      );
-
-      const json = await response.json();
-
-      // create new captured or refunded payment
-      if (json.result.code === "000.100.110") {
-        const payment = await prisma.payment.findUnique({
-          where: {
-            id,
-          },
-        });
-
-        if (paymentType === "CP") {
-          // update referenced payment status
-          await prisma.payment.update({
-            where: {
-              id,
-            },
-            data: {
-              status: "CAPTURED",
-            },
-          });
-
-          // create captured payment
-          await prisma.payment.create({
-            data: {
-              id: json.id,
-              referencedId: id,
-              amount,
-              status: "CAPTURED",
-              type: "CP",
-              brand: payment?.brand,
-            },
-          });
-        }
-
-        if (paymentType === "RF") {
-          // update referenced payment status
-          await prisma.payment.update({
-            where: {
-              id,
-            },
-            data: {
-              status: "REFUNDED",
-            },
-          });
-
-          // create refunded payment
-          await prisma.payment.create({
-            data: {
-              id: json.id,
-              referencedId: id,
-              amount,
-              status: "REFUNDED",
-              type: "RF",
-              brand: payment?.brand,
-            },
-          });
-        }
-      }
-
-      res.status(200).json({
-        message: "Payment captured successfully",
-        data: json,
-      });
-    } catch (error) {
-      console.error(error);
-    }
   }
-);
-
-app.listen(PORT, () => {
-  console.log("Server is running on port: ", PORT);
-});
+}
