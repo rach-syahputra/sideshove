@@ -21,7 +21,7 @@ const LoadingSpinner = ({ label = "Loading..." }: LoadingSpinnerProps) => {
           fill="currentFill"
         />
       </svg>
-      <span className="text-muted-foreground">{label}</span>
+      <span className="text-gray-700">{label}</span>
     </div>
   );
 };

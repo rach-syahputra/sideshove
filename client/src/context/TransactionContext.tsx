@@ -16,6 +16,8 @@ interface ITransactionContext {
   setPayments: Dispatch<SetStateAction<Payment[]>>;
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
+  loadingLabel: string;
+  setLoadingLabel: Dispatch<SetStateAction<string>>;
   type: string;
   setType: Dispatch<SetStateAction<string>>;
   fetchTransactions: () => void;
@@ -29,9 +31,19 @@ const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [type, setType] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [loadingLabel, setLoadingLabel] = useState<string>("");
 
   const fetchTransactions = async () => {
     setIsLoading(true);
+    setLoadingLabel(
+      type === "PA"
+        ? "Creating pre-authorize payment..."
+        : type === "CP"
+        ? "Capturing payment..."
+        : type === "RF"
+        ? "Refunding payment..."
+        : "Creating payment..."
+    );
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments?type=${
@@ -43,6 +55,7 @@ const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
 
     setPayments(data.data);
     setIsLoading(false);
+    setLoadingLabel("");
   };
 
   useEffect(() => {
@@ -56,6 +69,8 @@ const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
         setPayments,
         isLoading,
         setIsLoading,
+        loadingLabel,
+        setLoadingLabel,
         type,
         setType,
         fetchTransactions,

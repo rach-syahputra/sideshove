@@ -12,6 +12,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "./ui/button";
+import DialogAction from "./DialogAction";
+import { useState } from "react";
 
 interface TransactionTableProps {
   payments: Payment[];
@@ -19,8 +21,11 @@ interface TransactionTableProps {
 
 const TransactionTable = ({ payments }: TransactionTableProps) => {
   const { fetchTransactions } = useTransactionContext();
+  const [loadingLabel, setLoadingLabel] = useState<string>("");
 
   const handleCapturePayment = async (paymentId: string) => {
+    setLoadingLabel("Capturing payment...");
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments/${paymentId}?type=CP`,
       {
@@ -39,9 +44,13 @@ const TransactionTable = ({ payments }: TransactionTableProps) => {
     if (data.data.result.code === "000.100.110") {
       fetchTransactions();
     }
+
+    setLoadingLabel("");
   };
 
   const handleRefundPayment = async (paymentId: string) => {
+    setLoadingLabel("Refunding payment...");
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments/${paymentId}?type=RF`,
       {
@@ -60,6 +69,8 @@ const TransactionTable = ({ payments }: TransactionTableProps) => {
     if (data.data.result.code === "000.100.110") {
       fetchTransactions();
     }
+
+    setLoadingLabel("");
   };
 
   return (
@@ -128,6 +139,8 @@ const TransactionTable = ({ payments }: TransactionTableProps) => {
             ))}
         </TableBody>
       </Table>
+
+      {loadingLabel && <DialogAction label={loadingLabel} />}
     </>
   );
 };
