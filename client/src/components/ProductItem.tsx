@@ -14,30 +14,17 @@ interface ProductItemProps {
   price: number;
 }
 
-const ProductItem = ({ title, image, stock, price }: ProductItemProps) => {
+const ProductItem = ({
+  title,
+  slug,
+  image,
+  stock,
+  price,
+}: ProductItemProps) => {
   const router = useRouter();
 
   const handleCheckout = async () => {
-    // const response = await fetch(
-    //   `${process.env.NEXT_PUBLIC_API_BASE_URL}/checkouts`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       amount: price,
-    //     }),
-    //   }
-    // );
-
-    // const data = await response.json();
-
-    // if (data) {
-    //   router.push(`checkout/${data.data.id}`);
-    // }
-
-    router.push("checkout");
+    router.push(`checkout?product=${slug}`);
   };
 
   return (
