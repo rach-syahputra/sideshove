@@ -1,11 +1,12 @@
 "use client";
 
+import InfiniteScroll from "react-infinite-scroll-component";
+
 import { useTransactionContext } from "@/context/TransactionContext";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import TransactionTable from "./_components/TransactionTable";
 
 const TransactionsPage = () => {
-  const { isLoading, transactions } = useTransactionContext();
+  const { fetchTransactions, transactions, hasMore } = useTransactionContext();
 
   return (
     <main>
@@ -20,17 +21,14 @@ const TransactionsPage = () => {
             </p>
           </div>
 
-          {isLoading ? (
-            <div className="mx-auto py-4 flex items-center justify-center">
-              <LoadingSpinner label="Collecting transactions..." />
-            </div>
-          ) : transactions.length === 0 ? (
-            <p className="text-sm mx-auto py-6 text-muted-foreground">
-              No transactions.
-            </p>
-          ) : (
+          <InfiniteScroll
+            dataLength={transactions.length}
+            next={fetchTransactions}
+            hasMore={hasMore}
+            loader={<div></div>}
+          >
             <TransactionTable />
-          )}
+          </InfiniteScroll>
         </div>
       </div>
     </main>
