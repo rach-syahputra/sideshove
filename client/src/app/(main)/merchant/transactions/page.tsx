@@ -1,20 +1,11 @@
 "use client";
 
 import { useTransactionContext } from "@/context/TransactionContext";
-import TransactionTable from "@/app/(main)/merchant/transactions/_components/TransactionTable";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import TransactionTable from "./_components/TransactionTable";
 
 const TransactionsPage = () => {
-  const { isLoading, transactions, type, setType } = useTransactionContext();
+  const { isLoading, transactions } = useTransactionContext();
 
   return (
     <main>
@@ -28,22 +19,6 @@ const TransactionsPage = () => {
               Review your recent orders and payments.
             </p>
           </div>
-
-          <Select value={type} onValueChange={setType}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Payment Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Payment Type</SelectLabel>
-                <SelectItem value="PA">Pre-Authorize</SelectItem>
-                <SelectItem value="CP">Capture</SelectItem>
-                <SelectItem value="DB">Debit</SelectItem>
-                <SelectItem value="RF">Refund</SelectItem>
-                <SelectItem value="ALL">All</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
 
           {isLoading ? (
             <div className="mx-auto py-4 flex items-center justify-center">

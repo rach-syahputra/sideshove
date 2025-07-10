@@ -1,18 +1,15 @@
 import { CreateTransactionRequest } from "../types/transaction";
-import { MP_ACCESS_KEY } from "../config";
+import { MP_ACCESS_KEY, MP_API_BASE_URL } from "../config";
 
 class TransactionService {
   getAll = async () => {
-    const response = await fetch(
-      "https://test.mobipaid.io/v2/payment-requests",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${MP_ACCESS_KEY}`,
-        },
-      }
-    );
+    const response = await fetch(`${MP_API_BASE_URL}/payment-requests`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${MP_ACCESS_KEY}`,
+      },
+    });
 
     const data = await response.json();
 
@@ -30,17 +27,14 @@ class TransactionService {
       payment_type: req.paymentType,
     };
 
-    const response = await fetch(
-      "https://test.mobipaid.io/v2/payment-requests",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${MP_ACCESS_KEY}`,
-        },
-        body: JSON.stringify(transactionData),
-      }
-    );
+    const response = await fetch(`${MP_API_BASE_URL}/payment-requests`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${MP_ACCESS_KEY}`,
+      },
+      body: JSON.stringify(transactionData),
+    });
 
     const data = await response.json();
 
