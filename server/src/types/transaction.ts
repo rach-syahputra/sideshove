@@ -13,4 +13,5 @@ export interface CreateTransactionRequest {
   currency: CurrencyType;
   amount: number;
   paymentType: PaymentType;
+  mobileNumber: string;
 }

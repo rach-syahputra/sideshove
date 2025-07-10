@@ -5,8 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { CURRENCIES, REQUEST_METHODS } from "@/lib/constants/transaction";
-import { onceOffPaymentRequestFormSchema } from "@/lib/validations/transaction";
+import { CURRENCIES } from "@/lib/constants/transaction";
+import { onceOffPaymentRequestWithEmailFormSchema } from "@/lib/validations/transaction";
+import { useOnceOffPaymentContext } from "@/context/OnceOffPaymentContext";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -24,16 +25,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-const OnceOffPaymentRequestForm = () => {
+const OnceOffPaymentRequestWithEmailForm = () => {
   const router = useRouter();
+  const { setStep } = useOnceOffPaymentContext();
 
-  const form = useForm<z.infer<typeof onceOffPaymentRequestFormSchema>>({
-    resolver: zodResolver(onceOffPaymentRequestFormSchema),
+  const form = useForm<
+    z.infer<typeof onceOffPaymentRequestWithEmailFormSchema>
+  >({
+    resolver: zodResolver(onceOffPaymentRequestWithEmailFormSchema),
     defaultValues: {
-      requestMethods: ["EMAIL"],
       referenceNumber: "",
       email: "",
       amount: 0,
@@ -43,7 +45,7 @@ const OnceOffPaymentRequestForm = () => {
   });
 
   const onSubmit = async (
-    values: z.infer<typeof onceOffPaymentRequestFormSchema>
+    values: z.infer<typeof onceOffPaymentRequestWithEmailFormSchema>
   ) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions`,
@@ -53,7 +55,7 @@ const OnceOffPaymentRequestForm = () => {
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          requestMethods: values.requestMethods,
+          requestMethods: ["EMAIL"],
           referenceNumber: values.referenceNumber,
           email: values.email,
           amount: values.amount,
@@ -71,103 +73,17 @@ const OnceOffPaymentRequestForm = () => {
   };
 
   return (
-    <div className="flex p-4 flex-col lg:pl-8 items-center justify-start gap-6 lg:col-span-2">
-      <div className="flex text-center flex-col gap-1">
-        <h1 className="text-2xl font-bold">Single Payment Request</h1>
-        <p className="text-sm text-gray-500">Create your payment securely.</p>
-      </div>
-
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
-        >
-          <FormField
-            control={form.control}
-            name="requestMethods"
-            render={() => (
-              <FormItem>
-                <FormLabel>Delivery Options</FormLabel>
-                {REQUEST_METHODS.map((method) => (
-                  <FormField
-                    key={method.id}
-                    control={form.control}
-                    name="requestMethods"
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={method.id}
-                          className="flex flex-row items-center gap-2"
-                        >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(method.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, method.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== method.id
-                                      )
-                                    );
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-normal">
-                            {method.label}
-                          </FormLabel>
-                        </FormItem>
-                      );
-                    }}
-                  />
-                ))}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+        <div className="grid grid-cols-2 items-start gap-8">
           <FormField
             control={form.control}
             name="referenceNumber"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Reference number</FormLabel>
                 <FormControl>
                   <Input {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Customer Email</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="amount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Amount</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    {...field}
-                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                  />
                 </FormControl>
 
                 <FormMessage />
@@ -186,7 +102,7 @@ const OnceOffPaymentRequestForm = () => {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger className="w-[140px]">
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Currency" />
                     </SelectTrigger>
                   </FormControl>
@@ -237,17 +153,52 @@ const OnceOffPaymentRequestForm = () => {
             )}
           />
 
-          <Button
-            type="submit"
-            disabled={form.formState.isSubmitting}
-            className="w-full"
-          >
+          <FormField
+            control={form.control}
+            name="amount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Amount</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Customer Email</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 w-full items-center gap-4 justify-between">
+          <Button onClick={() => setStep((prev) => prev - 1)} variant="outline">
+            Back
+          </Button>
+          <Button type="submit" disabled={form.formState.isSubmitting}>
             Submit Payment Request
           </Button>
-        </form>
-      </Form>
-    </div>
+        </div>
+      </form>
+    </Form>
   );
 };
 
-export default OnceOffPaymentRequestForm;
+export default OnceOffPaymentRequestWithEmailForm;

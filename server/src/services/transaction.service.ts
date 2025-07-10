@@ -30,6 +30,7 @@ class TransactionService {
       currency: req.currency,
       fixed_amount: true,
       payment_type: req.paymentType,
+      mobile_number: req.mobileNumber,
     };
 
     const response = await fetch(`${MP_API_BASE_URL}/payment-requests`, {

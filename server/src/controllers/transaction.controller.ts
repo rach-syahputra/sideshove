@@ -33,6 +33,7 @@ class TransactionController {
       amount,
       currency,
       paymentType,
+      mobileNumber,
     } = req.body;
 
     try {
@@ -43,9 +44,10 @@ class TransactionController {
         amount,
         currency,
         paymentType,
+        mobileNumber,
       });
 
-      res.status(200).json({
+      res.status(201).json({
         message: "Payment request created successfully",
         data: response,
       });
