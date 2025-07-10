@@ -10,8 +10,11 @@ class TransactionController {
   }
 
   getAll = async (req: Request, res: Response, next: NextFunction) => {
+    const { page } = req.query;
     try {
-      const response = await this.transactionService.getAll();
+      const response = await this.transactionService.getAll({
+        page: Number(page) || 1,
+      });
 
       res.status(200).json({
         message: "Transactions retrieved successfully",

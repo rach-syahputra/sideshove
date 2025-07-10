@@ -1,11 +1,12 @@
 "use client";
 
+import InfiniteScroll from "react-infinite-scroll-component";
+
 import { usePaymentContext } from "@/context/PaymentContext";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import PaymentTable from "./_components/PaymentTable";
 
 const TransactionsPage = () => {
-  const { isLoading, payments } = usePaymentContext();
+  const { fetchPayments, payments, hasMore } = usePaymentContext();
 
   return (
     <main>
@@ -18,17 +19,14 @@ const TransactionsPage = () => {
             </p>
           </div>
 
-          {isLoading ? (
-            <div className="mx-auto py-4 flex items-center justify-center">
-              <LoadingSpinner label="Collecting transactions..." />
-            </div>
-          ) : payments.length === 0 ? (
-            <p className="text-sm mx-auto py-6 text-muted-foreground">
-              No payments.
-            </p>
-          ) : (
+          <InfiniteScroll
+            dataLength={payments.length}
+            next={fetchPayments}
+            hasMore={hasMore}
+            loader={<div></div>}
+          >
             <PaymentTable />
-          )}
+          </InfiniteScroll>
         </div>
       </div>
     </main>

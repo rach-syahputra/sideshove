@@ -1,14 +1,20 @@
-import { CreateTransactionRequest } from "../types/transaction";
+import {
+  CreateTransactionRequest,
+  GetTransactionsRequest,
+} from "../types/transaction";
 import { MP_ACCESS_KEY, MP_API_BASE_URL } from "../config";
 
 class TransactionService {
-  getAll = async () => {
-    const response = await fetch(`${MP_API_BASE_URL}/payment-requests`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${MP_ACCESS_KEY}`,
-      },
-    });
+  getAll = async (req: GetTransactionsRequest) => {
+    const response = await fetch(
+      `${MP_API_BASE_URL}/payment-requests?page=${req.page || 1}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${MP_ACCESS_KEY}`,
+        },
+      }
+    );
 
     const data = await response.json();
 

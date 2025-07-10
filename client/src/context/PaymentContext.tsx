@@ -15,6 +15,8 @@ interface IPaymentContext {
   payments: Payment[];
   setPayments: Dispatch<SetStateAction<Payment[]>>;
   isLoading: boolean;
+  hasMore: boolean;
+  setHasMore: Dispatch<SetStateAction<boolean>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   loadingLabel: string;
   setLoadingLabel: Dispatch<SetStateAction<string>>;
@@ -28,7 +30,9 @@ const PaymentContext = createContext<IPaymentContext | undefined>(undefined);
 const PaymentProvider = ({ children }: { children: React.ReactNode }) => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [type, setType] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadingLabel, setLoadingLabel] = useState<string>("");
 
   const fetchPayments = async () => {
@@ -44,21 +48,30 @@ const PaymentProvider = ({ children }: { children: React.ReactNode }) => {
     );
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments?page=${page}`
     );
 
     const data = await response.json();
 
     console.log("Payments", data);
 
-    setPayments(data.data.payments);
+    if (data.data?.payments?.length > 0) {
+      setPayments((prev) => [...prev, ...data.data.payments]);
+
+      if (page < data.data?.page_count) {
+        setPage((prev) => prev + 1);
+      }
+      setHasMore(true);
+    } else {
+      setHasMore(false);
+    }
     setIsLoading(false);
     setLoadingLabel("");
   };
 
   useEffect(() => {
     fetchPayments();
-  }, []);
+  }, [page]);
 
   return (
     <PaymentContext.Provider
@@ -67,6 +80,8 @@ const PaymentProvider = ({ children }: { children: React.ReactNode }) => {
         setPayments,
         isLoading,
         setIsLoading,
+        hasMore,
+        setHasMore,
         loadingLabel,
         setLoadingLabel,
         type,
