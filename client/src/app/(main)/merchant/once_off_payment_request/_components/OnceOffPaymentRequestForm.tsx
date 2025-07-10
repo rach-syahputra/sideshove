@@ -66,7 +66,7 @@ const OnceOffPaymentRequestForm = () => {
     const data = await response.json();
 
     if (data.data.result === "success") {
-      router.push("/transactions");
+      router.push("/merchant/transactions");
     }
   };
 

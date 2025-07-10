@@ -6,7 +6,6 @@ class TransactionService {
     const response = await fetch(`${MP_API_BASE_URL}/payment-requests`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${MP_ACCESS_KEY}`,
       },
     });

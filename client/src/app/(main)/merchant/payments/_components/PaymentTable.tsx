@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Ellipsis } from "lucide-react";
 
 import { formatDate } from "@/lib/utils";
-import { useTransactionContext } from "@/context/TransactionContext";
+import { usePaymentContext } from "@/context/PaymentContext";
 import {
   Table,
   TableBody,
@@ -14,10 +14,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import DialogAction from "@/components/DialogAction";
-import PaymentTypeDialog from "./PaymentTypeDialog";
 
-const TransactionTable = () => {
-  const { transactions } = useTransactionContext();
+const PaymentTable = () => {
+  const { payments } = usePaymentContext();
   const [loadingLabel] = useState<string>("");
 
   return (
@@ -26,48 +25,40 @@ const TransactionTable = () => {
         <TableHeader>
           <TableRow>
             <TableHead>Date</TableHead>
+            <TableHead>Unique ID</TableHead>
             <TableHead>Ref. Number</TableHead>
             <TableHead>Payment Type</TableHead>
-            <TableHead>Customer</TableHead>
             <TableHead>Amount</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {transactions?.length > 0 &&
-            transactions.map((transaction, index) => (
+          {payments?.length > 0 &&
+            payments.map((payment, index) => (
               <TableRow key={index}>
                 <TableCell>
-                  {formatDate(new Date(transaction.created_at))}
+                  {formatDate(new Date(payment.payment_date))}
                 </TableCell>
-                <TableCell>{transaction.reference_number}</TableCell>
+                <TableCell>{payment.payment_id}</TableCell>
+                <TableCell>{payment.reference_number}</TableCell>
+
+                <TableCell>{payment.payment_type}</TableCell>
                 <TableCell>
-                  <PaymentTypeDialog
-                    label={
-                      transaction.payment_frequency === "ONE-TIME"
-                        ? "Single"
-                        : "Recurring"
-                    }
-                    url={transaction.url}
-                  />
-                </TableCell>
-                <TableCell>{transaction.email}</TableCell>
-                <TableCell>
-                  {transaction.currency} {transaction.amount}
+                  {payment.currency} {payment.amount}
                 </TableCell>
                 <TableCell>
-                  {transaction.status === "pending" ? (
+                  {payment.status === "pending" ? (
                     <span className="uppercase font-medium text-orange-500">
                       ACTIVE
                     </span>
-                  ) : transaction.status === "success" ? (
+                  ) : payment.status === "success" ? (
                     <span className="uppercase font-medium text-green-500">
-                      {transaction.status}
+                      {payment.status}
                     </span>
                   ) : (
                     <span className="uppercase font-medium text-red-500">
-                      {transaction.status}
+                      {payment.status}
                     </span>
                   )}
                 </TableCell>
@@ -84,4 +75,4 @@ const TransactionTable = () => {
   );
 };
 
-export default TransactionTable;
+export default PaymentTable;

@@ -7,9 +7,14 @@ const Navbar = () => {
         <Link href="/" className="font-bold">
           SIDESHOV
         </Link>
-        <Link href="/merchant/transactions" className="hover:underline">
-          Transaction Log
-        </Link>
+        <div className="flex items-center justify-center gap-6">
+          <Link href="/merchant/transactions" className="hover:underline">
+            Transaction Log
+          </Link>
+          <Link href="/merchant/payments" className="hover:underline">
+            Payment History
+          </Link>
+        </div>
       </div>
     </nav>
   );

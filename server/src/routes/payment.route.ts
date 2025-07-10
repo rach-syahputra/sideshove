@@ -12,9 +12,7 @@ class PaymentRoute {
   }
 
   private initializeRoutes(): void {
-    this.router.post("/", this.paymentController.create);
     this.router.get("/", this.paymentController.getAll);
-    this.router.post("/:id", this.paymentController.update);
   }
 
   getRouter(): Router {
