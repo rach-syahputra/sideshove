@@ -7,8 +7,8 @@ const Navbar = () => {
         <Link href="/" className="font-bold">
           SIDESHOV
         </Link>
-        <Link href="transactions" className="hover:underline">
-          Transaction History
+        <Link href="/merchant/transactions" className="hover:underline">
+          Transaction Log
         </Link>
       </div>
     </nav>

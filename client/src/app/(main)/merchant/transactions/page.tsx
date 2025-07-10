@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransactionContext } from "@/context/TransactionContext";
-import TransactionTable from "@/components/TransactionTable";
+import TransactionTable from "@/app/(main)/merchant/transactions/_components/TransactionTable";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import {
   Select,
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 
 const TransactionsPage = () => {
-  const { isLoading, payments, type, setType } = useTransactionContext();
+  const { isLoading, transactions, type, setType } = useTransactionContext();
 
   return (
     <main>
@@ -49,12 +49,12 @@ const TransactionsPage = () => {
             <div className="mx-auto py-4 flex items-center justify-center">
               <LoadingSpinner label="Collecting transactions..." />
             </div>
-          ) : payments.length === 0 ? (
+          ) : transactions.length === 0 ? (
             <p className="text-sm mx-auto py-6 text-muted-foreground">
               No transactions.
             </p>
           ) : (
-            <TransactionTable payments={payments} />
+            <TransactionTable />
           )}
         </div>
       </div>

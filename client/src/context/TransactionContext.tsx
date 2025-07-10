@@ -9,11 +9,11 @@ import {
   useState,
 } from "react";
 
-import { Payment } from "@/lib/types/transaction";
+import { Transaction } from "@/lib/types/transaction";
 
 interface ITransactionContext {
-  payments: Payment[];
-  setPayments: Dispatch<SetStateAction<Payment[]>>;
+  transactions: Transaction[];
+  setTransactions: Dispatch<SetStateAction<Transaction[]>>;
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   loadingLabel: string;
@@ -28,7 +28,7 @@ const TransactionContext = createContext<ITransactionContext | undefined>(
 );
 
 const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
-  const [payments, setPayments] = useState<Payment[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [type, setType] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingLabel, setLoadingLabel] = useState<string>("");
@@ -46,27 +46,27 @@ const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
     );
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments?type=${
-        type !== "ALL" ? type : ""
-      }`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions`
     );
 
     const data = await response.json();
 
-    setPayments(data.data);
+    console.log("transactions", data);
+
+    setTransactions(data.data.transactions);
     setIsLoading(false);
     setLoadingLabel("");
   };
 
   useEffect(() => {
     fetchTransactions();
-  }, [type]);
+  }, []);
 
   return (
     <TransactionContext.Provider
       value={{
-        payments,
-        setPayments,
+        transactions,
+        setTransactions,
         isLoading,
         setIsLoading,
         loadingLabel,

@@ -1,9 +1,10 @@
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
+import { PORT } from "./config";
 
 // routes
+import TransactionRoute from "./routes/transaction.route";
 import PaymentRoute from "./routes/payment.route";
-import { PORT } from "./config";
 
 export default class App {
   private app: Express;
@@ -20,8 +21,10 @@ export default class App {
   }
 
   private routes(): void {
+    const transactionRoute = new TransactionRoute();
     const paymentRoute = new PaymentRoute();
 
+    this.app.use("/api/transactions", transactionRoute.getRouter());
     this.app.use("/api/payments", paymentRoute.getRouter());
     this.app.get("/api", (req: Request, res: Response) => {
       res.status(200).json({
