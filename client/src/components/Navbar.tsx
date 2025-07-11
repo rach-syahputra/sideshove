@@ -1,18 +1,15 @@
 import Link from "next/link";
 
+import DashboardSidebarToggler from "./DashboardSidebarToggler";
+
 const Navbar = () => {
   return (
-    <nav className="w-full shadow">
-      <div className="flex h-20 max-w-5xl mx-auto px-4 items-center justify-between">
-        <Link href="/" className="font-bold">
-          SIDESHOV
-        </Link>
-        <div className="flex items-center justify-center gap-6">
-          <Link href="/merchant/transactions" className="hover:underline">
-            Transaction Log
-          </Link>
-          <Link href="/merchant/payments" className="hover:underline">
-            Payment History
+    <nav className="fixed top-0 left-0 z-50 w-full bg-white shadow">
+      <div className="mx-auto flex h-16 items-center justify-between px-4">
+        <div className="flex items-center gap-4">
+          <DashboardSidebarToggler />
+          <Link href="/" className="font-bold select-none">
+            SIDESHOV
           </Link>
         </div>
       </div>

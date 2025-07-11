@@ -31,7 +31,7 @@ export default function RootLayout({
         <Suspense
           fallback={
             <div className="w-screen min-h-svh flex justify-center items-center">
-              <p className="text-gray-800">Loading</p>
+              <p className="text-gray-800">Loading...</p>
             </div>
           }
         >
