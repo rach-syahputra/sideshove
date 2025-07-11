@@ -7,20 +7,22 @@ import { useOnceOffPaymentContext } from "@/context/OnceOffPaymentContext";
 import { Card } from "@/components/ui/card";
 
 const PaymentMethodList = () => {
-  const { paymentMethod, setPaymentMethod } = useOnceOffPaymentContext();
+  const { requestMethods, setRequestMethods } = useOnceOffPaymentContext();
   return (
     <div className="grid grid-cols-4 gap-4">
       <Card
-        onClick={() => setPaymentMethod("SMS")}
+        onClick={() => setRequestMethods(["SMS"])}
         className={cn("group cursor-pointer", {
-          "border-primary": paymentMethod === "SMS",
+          "border-primary": requestMethods?.every((method) => method === "SMS"),
         })}
       >
         <div
           className={cn(
             "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
             {
-              "text-primary": paymentMethod === "SMS",
+              "text-primary": requestMethods?.every(
+                (method) => method === "SMS",
+              ),
             },
           )}
         >
@@ -32,16 +34,20 @@ const PaymentMethodList = () => {
       </Card>
 
       <Card
-        onClick={() => setPaymentMethod("EMAIL")}
+        onClick={() => setRequestMethods(["EMAIL"])}
         className={cn("group cursor-pointer", {
-          "border-primary": paymentMethod === "EMAIL",
+          "border-primary": requestMethods?.every(
+            (method) => method === "EMAIL",
+          ),
         })}
       >
         <div
           className={cn(
             "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
             {
-              "text-primary": paymentMethod === "EMAIL",
+              "text-primary": requestMethods?.every(
+                (method) => method === "EMAIL",
+              ),
             },
           )}
         >
@@ -53,16 +59,20 @@ const PaymentMethodList = () => {
       </Card>
 
       <Card
-        onClick={() => setPaymentMethod("SMS_EMAIL")}
+        onClick={() => setRequestMethods(["EMAIL", "SMS"])}
         className={cn("group cursor-pointer", {
-          "border-primary": paymentMethod === "SMS_EMAIL",
+          "border-primary":
+            requestMethods?.includes("SMS") &&
+            requestMethods?.includes("EMAIL"),
         })}
       >
         <div
           className={cn(
             "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
             {
-              "text-primary": paymentMethod === "SMS_EMAIL",
+              "text-primary":
+                requestMethods?.includes("SMS") &&
+                requestMethods?.includes("EMAIL"),
             },
           )}
         >
