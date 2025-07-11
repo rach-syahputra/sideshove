@@ -8,13 +8,12 @@ import { toast } from "sonner";
 import { Check } from "lucide-react";
 
 import { CURRENCIES } from "@/lib/constants/transaction";
-import { onceOffPaymentRequestWithSMSAndEmailFormSchema } from "@/lib/validations/transaction";
-import { useOnceOffPaymentContext } from "@/context/OnceOffPaymentContext";
+import { onceOffPaymentRequestWithEmailFormSchema } from "@/lib/validations/transaction";
+import { useOnceOffEditPaymentContext } from "@/context/OnceOffEditPaymentContext";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -30,39 +29,37 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-const OnceOffPaymentRequestWithSMSAndEmailForm = () => {
+const OnceOffPaymentRequestWithEmailForm = () => {
   const router = useRouter();
-  const { setStep } = useOnceOffPaymentContext();
+  const { setStep, transaction } = useOnceOffEditPaymentContext();
 
   const form = useForm<
-    z.infer<typeof onceOffPaymentRequestWithSMSAndEmailFormSchema>
+    z.infer<typeof onceOffPaymentRequestWithEmailFormSchema>
   >({
-    resolver: zodResolver(onceOffPaymentRequestWithSMSAndEmailFormSchema),
+    resolver: zodResolver(onceOffPaymentRequestWithEmailFormSchema),
     defaultValues: {
-      referenceNumber: "",
-      mobileNumber: "",
-      email: "",
-      amount: 0,
-      currency: "ZAR",
-      paymentType: "DB",
+      referenceNumber: transaction.reference_number,
+      email: transaction.email,
+      amount: Number(transaction.amount),
+      currency: transaction.currency,
+      paymentType: transaction.payment_type,
     },
   });
 
   const onSubmit = async (
-    values: z.infer<typeof onceOffPaymentRequestWithSMSAndEmailFormSchema>,
+    values: z.infer<typeof onceOffPaymentRequestWithEmailFormSchema>,
   ) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions/${transaction.transaction_id}`,
       {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          requestMethods: ["SMS", "EMAIL"],
+          requestMethods: ["EMAIL"],
           referenceNumber: values.referenceNumber,
           email: values.email,
-          mobileNumber: values.mobileNumber,
           amount: values.amount,
           currency: values.currency,
           paymentType: values.paymentType,
@@ -73,7 +70,7 @@ const OnceOffPaymentRequestWithSMSAndEmailForm = () => {
     const data = await response.json();
 
     if (data.data.result === "success") {
-      toast("Payment request successfully created", {
+      toast("Payment request successfully updated", {
         icon: <Check className="w-5 text-green-600" />,
         position: "top-center",
       });
@@ -187,21 +184,6 @@ const OnceOffPaymentRequestWithSMSAndEmailForm = () => {
 
           <FormField
             control={form.control}
-            name="mobileNumber"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Mobile number</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormDescription>e.g., +1234567899900</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
@@ -235,4 +217,4 @@ const OnceOffPaymentRequestWithSMSAndEmailForm = () => {
   );
 };
 
-export default OnceOffPaymentRequestWithSMSAndEmailForm;
+export default OnceOffPaymentRequestWithEmailForm;

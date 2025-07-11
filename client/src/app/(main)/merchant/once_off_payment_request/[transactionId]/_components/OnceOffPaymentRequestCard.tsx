@@ -1,6 +1,6 @@
 "use client";
 
-import { useOnceOffPaymentContext } from "@/context/OnceOffPaymentContext";
+import { useOnceOffEditPaymentContext } from "@/context/OnceOffEditPaymentContext";
 import {
   Card,
   CardContent,
@@ -14,13 +14,13 @@ import OnceOffPaymentRequestWithSMSForm from "./OnceOffPaymentRequestWithSMSForm
 import OnceOffPaymentRequestWithSMSAndEmailForm from "./OnceOffPaymentRequestWithSMSAndEmailForm";
 
 const OnceOffPaymentRequestCard = () => {
-  const { requestMethods, step } = useOnceOffPaymentContext();
+  const { requestMethods, step } = useOnceOffEditPaymentContext();
 
   return (
     <Card>
       <CardHeader className="flex flex-col gap-1 text-center">
-        <h1 className="text-2xl font-bold">Single Payment Request</h1>
-        <p className="text-sm text-gray-500">Create your payment securely.</p>
+        <h1 className="text-2xl font-bold">Edit Single Transaction</h1>
+        <p className="text-sm text-gray-500">Update your payment securely.</p>
       </CardHeader>
       <CardContent>
         {step === 1 ? (

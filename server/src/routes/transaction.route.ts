@@ -13,7 +13,9 @@ class TransactionRoute {
 
   private initializeRoutes(): void {
     this.router.get("/", this.transactionController.getAll);
+    this.router.get("/:transactionId", this.transactionController.get);
     this.router.post("/", this.transactionController.create);
+    this.router.put("/:transactionId", this.transactionController.update);
   }
 
   getRouter(): Router {

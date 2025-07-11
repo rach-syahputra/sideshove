@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Ellipsis } from "lucide-react";
 
 import { formatDate } from "@/lib/utils";
 import { useTransactionContext } from "@/context/TransactionContext";
@@ -16,6 +15,8 @@ import {
 import DialogAction from "@/components/DialogAction";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PaymentTypeDialog from "./PaymentTypeDialog";
+import ActionDialog from "./ActionDialog";
+import CustomerDialog from "./CustomerDialog";
 
 const TransactionTable = () => {
   const { transactions, isLoading } = useTransactionContext();
@@ -54,7 +55,12 @@ const TransactionTable = () => {
                       url={transaction.url}
                     />
                   </TableCell>
-                  <TableCell>{transaction.email}</TableCell>
+                  <TableCell className="w-[300px]">
+                    <CustomerDialog
+                      email={transaction.email}
+                      mobileNumber={transaction.mobile_number}
+                    />
+                  </TableCell>
                   <TableCell>
                     {transaction.currency} {transaction.amount}
                   </TableCell>
@@ -74,7 +80,10 @@ const TransactionTable = () => {
                     )}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Ellipsis className="text-muted-foreground w-5 place-self-end" />
+                    <ActionDialog
+                      transactionId={transaction.transaction_id}
+                      status={transaction.status}
+                    />
                   </TableCell>
                 </TableRow>
               ))}

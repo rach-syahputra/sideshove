@@ -25,6 +25,22 @@ class TransactionController {
     }
   };
 
+  get = async (req: Request, res: Response, next: NextFunction) => {
+    const { transactionId } = req.params;
+    try {
+      const response = await this.transactionService.get({
+        transactionId,
+      });
+
+      res.status(200).json({
+        message: "Transaction detail retrieved successfully",
+        data: response,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   create = async (req: Request, res: Response, next: NextFunction) => {
     const {
       requestMethods,
@@ -49,6 +65,39 @@ class TransactionController {
 
       res.status(201).json({
         message: "Payment request created successfully",
+        data: response,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  update = async (req: Request, res: Response, next: NextFunction) => {
+    const { transactionId } = req.params;
+    const {
+      referenceNumber,
+      requestMethods,
+      email,
+      amount,
+      currency,
+      paymentType,
+      mobileNumber,
+    } = req.body;
+
+    try {
+      const response = await this.transactionService.update({
+        transactionId,
+        requestMethods,
+        referenceNumber,
+        email,
+        amount,
+        currency,
+        paymentType,
+        mobileNumber,
+      });
+
+      res.status(200).json({
+        message: "Payment request updated successfully",
         data: response,
       });
     } catch (error) {

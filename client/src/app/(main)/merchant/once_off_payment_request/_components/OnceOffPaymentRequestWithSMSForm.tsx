@@ -7,13 +7,14 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Check } from "lucide-react";
 
-import { CURRENCIES, phonePrefixes } from "@/lib/constants/transaction";
+import { CURRENCIES } from "@/lib/constants/transaction";
 import { onceOffPaymentRequestWithSMSFormSchema } from "@/lib/validations/transaction";
 import { useOnceOffPaymentContext } from "@/context/OnceOffPaymentContext";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -37,7 +38,6 @@ const OnceOffPaymentRequestWithSMSForm = () => {
     resolver: zodResolver(onceOffPaymentRequestWithSMSFormSchema),
     defaultValues: {
       referenceNumber: "",
-      phonePrefix: "+62",
       mobileNumber: "",
       amount: 0,
       currency: "ZAR",
@@ -58,7 +58,7 @@ const OnceOffPaymentRequestWithSMSForm = () => {
         body: JSON.stringify({
           requestMethods: ["SMS"],
           referenceNumber: values.referenceNumber,
-          mobileNumber: `${values.phonePrefix}${values.mobileNumber}`,
+          mobileNumber: values.mobileNumber,
           amount: values.amount,
           currency: values.currency,
           paymentType: values.paymentType,
@@ -184,48 +184,13 @@ const OnceOffPaymentRequestWithSMSForm = () => {
           <FormField
             control={form.control}
             name="mobileNumber"
-            render={() => (
-              <FormItem>
-                <FormLabel>Mobile Number</FormLabel>
-                <div className="border-input bg-background flex overflow-hidden rounded-md border shadow-sm">
-                  <FormField
-                    control={form.control}
-                    name="phonePrefix"
-                    render={({ field }) => (
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-24 rounded-none border-r border-none px-2">
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {phonePrefixes.map((item) => (
-                            <SelectItem key={item.key} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="mobileNumber"
-                    render={({ field }) => (
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="rounded-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                          placeholder="81234567890"
-                        />
-                      </FormControl>
-                    )}
-                  />
-                </div>
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Mobile number</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormDescription>e.g., +1234567899900</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

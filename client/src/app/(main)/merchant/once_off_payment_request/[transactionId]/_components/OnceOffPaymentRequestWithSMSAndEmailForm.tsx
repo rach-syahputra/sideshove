@@ -9,7 +9,7 @@ import { Check } from "lucide-react";
 
 import { CURRENCIES } from "@/lib/constants/transaction";
 import { onceOffPaymentRequestWithSMSAndEmailFormSchema } from "@/lib/validations/transaction";
-import { useOnceOffPaymentContext } from "@/context/OnceOffPaymentContext";
+import { useOnceOffEditPaymentContext } from "@/context/OnceOffEditPaymentContext";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -32,19 +32,19 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const OnceOffPaymentRequestWithSMSAndEmailForm = () => {
   const router = useRouter();
-  const { setStep } = useOnceOffPaymentContext();
+  const { setStep, transaction } = useOnceOffEditPaymentContext();
 
   const form = useForm<
     z.infer<typeof onceOffPaymentRequestWithSMSAndEmailFormSchema>
   >({
     resolver: zodResolver(onceOffPaymentRequestWithSMSAndEmailFormSchema),
     defaultValues: {
-      referenceNumber: "",
-      mobileNumber: "",
-      email: "",
-      amount: 0,
-      currency: "ZAR",
-      paymentType: "DB",
+      referenceNumber: transaction.reference_number,
+      mobileNumber: transaction.mobile_number,
+      email: transaction.email,
+      amount: Number(transaction.amount),
+      currency: transaction.currency,
+      paymentType: transaction.payment_type,
     },
   });
 
@@ -52,9 +52,9 @@ const OnceOffPaymentRequestWithSMSAndEmailForm = () => {
     values: z.infer<typeof onceOffPaymentRequestWithSMSAndEmailFormSchema>,
   ) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions/${transaction.transaction_id}`,
       {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-type": "application/json",
         },
@@ -73,7 +73,7 @@ const OnceOffPaymentRequestWithSMSAndEmailForm = () => {
     const data = await response.json();
 
     if (data.data.result === "success") {
-      toast("Payment request successfully created", {
+      toast("Payment request successfully updated", {
         icon: <Check className="w-5 text-green-600" />,
         position: "top-center",
       });

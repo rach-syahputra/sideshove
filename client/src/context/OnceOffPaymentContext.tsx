@@ -1,5 +1,6 @@
 "use client";
 
+import { TransactionRequestMethod } from "@/lib/types/transaction";
 import {
   createContext,
   Dispatch,
@@ -8,11 +9,11 @@ import {
   useState,
 } from "react";
 
-type PaymentMethodFormType = "SMS" | "EMAIL" | "SMS_EMAIL" | "LINK";
-
 interface IOnceOffPaymentContext {
-  paymentMethod: PaymentMethodFormType | null;
-  setPaymentMethod: Dispatch<SetStateAction<PaymentMethodFormType | null>>;
+  requestMethods: TransactionRequestMethod[] | null;
+  setRequestMethods: Dispatch<
+    SetStateAction<TransactionRequestMethod[] | null>
+  >;
   step: number;
   setStep: Dispatch<SetStateAction<number>>;
 }
@@ -26,15 +27,16 @@ const OnceOffPaymentProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [paymentMethod, setPaymentMethod] =
-    useState<PaymentMethodFormType | null>(null);
+  const [requestMethods, setRequestMethods] = useState<
+    TransactionRequestMethod[] | null
+  >(null);
   const [step, setStep] = useState<number>(1);
 
   return (
     <OnceOffPaymentContext.Provider
       value={{
-        paymentMethod,
-        setPaymentMethod,
+        requestMethods,
+        setRequestMethods,
         step,
         setStep,
       }}

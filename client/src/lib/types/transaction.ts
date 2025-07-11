@@ -7,6 +7,8 @@ export type TransactionStatusType =
 
 export type TransactionRequestMethod = "SMS" | "EMAIL" | "WEB";
 
+export type TransactionCurrencyType = "ZAR" | "EUR" | "USD" | "GBP";
+
 export type PaymentFrequency = "ONE-TIME" | "MONTHLY" | "QUARTERLY" | "YEARLY";
 
 export type PaymentStatusType =
@@ -48,7 +50,7 @@ export interface Transaction {
   email: string;
   amount: string;
   status: TransactionStatusType;
-  currency: string;
+  currency: TransactionCurrencyType;
   url: string;
 }
 
@@ -61,7 +63,7 @@ export interface Payment {
   mobile_number: string;
   email: string;
   amount: number;
-  currency: string;
+  currency: TransactionCurrencyType;
   payment_type: string;
   payment_date: string;
   status: TransactionStatusType;

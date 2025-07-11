@@ -12,7 +12,7 @@ const onceOffPaymentRequestFormSchema = z.object({
       required_error: "Amount is required",
     })
     .min(1, "Amount cannot be 0"),
-  paymentType: z.enum(["PA", "DB"], {
+  paymentType: z.enum(["PA", "DB", "CP", "RF"], {
     message: "Invalid payment type",
     required_error: "Payment type is required",
   }),
@@ -20,10 +20,9 @@ const onceOffPaymentRequestFormSchema = z.object({
 
 export const onceOffPaymentRequestWithSMSFormSchema =
   onceOffPaymentRequestFormSchema.extend({
-    phonePrefix: z.string({ message: "Invalid phone number" }),
-    mobileNumber: z
-      .string({ message: "Mobile number is required" })
-      .min(10, "Invalid mobile number"),
+    mobileNumber: z.string().regex(/^\+[1-9]\d{7,14}$/, {
+      message: "Invalid mobile number format",
+    }),
   });
 
 export const onceOffPaymentRequestWithEmailFormSchema =
@@ -33,9 +32,8 @@ export const onceOffPaymentRequestWithEmailFormSchema =
 
 export const onceOffPaymentRequestWithSMSAndEmailFormSchema =
   onceOffPaymentRequestFormSchema.extend({
-    phonePrefix: z.string({ message: "Invalid phone number" }),
-    mobileNumber: z
-      .string({ message: "Mobile number is required" })
-      .min(10, "Invalid mobile number"),
+    mobileNumber: z.string().regex(/^\+[1-9]\d{7,14}$/, {
+      message: "Invalid mobile number format",
+    }),
     email: z.string().email({ message: "Invalid email format" }),
   });
