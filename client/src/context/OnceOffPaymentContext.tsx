@@ -18,7 +18,7 @@ interface IOnceOffPaymentContext {
 }
 
 const OnceOffPaymentContext = createContext<IOnceOffPaymentContext | undefined>(
-  undefined
+  undefined,
 );
 
 const OnceOffPaymentProvider = ({
@@ -48,7 +48,7 @@ const useOnceOffPaymentContext = (): IOnceOffPaymentContext => {
   const context = useContext(OnceOffPaymentContext);
   if (context === undefined) {
     throw new Error(
-      "useOnceOffPaymentContext must be used within a OnceOffPaymentProvider"
+      "useOnceOffPaymentContext must be used within a OnceOffPaymentProvider",
     );
   }
   return context;

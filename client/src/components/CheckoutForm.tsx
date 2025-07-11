@@ -63,7 +63,7 @@ const CheckoutForm = () => {
           expiryYear,
           cvv: values.cvv,
         }),
-      }
+      },
     );
 
     const data = await response.json();
@@ -74,8 +74,8 @@ const CheckoutForm = () => {
   };
 
   return (
-    <div className="flex p-4 flex-col lg:pl-8 items-center justify-start gap-6 lg:col-span-2">
-      <div className="flex text-center flex-col gap-1">
+    <div className="flex flex-col items-center justify-start gap-6 p-4 lg:col-span-2 lg:pl-8">
+      <div className="flex flex-col gap-1 text-center">
         <h1 className="text-2xl font-bold">Payment Form</h1>
         <p className="text-sm text-gray-500">
           Complete your order with secure checkout.
@@ -85,7 +85,7 @@ const CheckoutForm = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
+          className="w-full space-y-8"
         >
           <FormField
             control={form.control}

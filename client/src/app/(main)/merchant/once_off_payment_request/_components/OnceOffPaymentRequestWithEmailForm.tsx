@@ -45,7 +45,7 @@ const OnceOffPaymentRequestWithEmailForm = () => {
   });
 
   const onSubmit = async (
-    values: z.infer<typeof onceOffPaymentRequestWithEmailFormSchema>
+    values: z.infer<typeof onceOffPaymentRequestWithEmailFormSchema>,
   ) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions`,
@@ -62,7 +62,7 @@ const OnceOffPaymentRequestWithEmailForm = () => {
           currency: values.currency,
           paymentType: values.paymentType,
         }),
-      }
+      },
     );
 
     const data = await response.json();
@@ -74,7 +74,7 @@ const OnceOffPaymentRequestWithEmailForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
         <div className="grid grid-cols-2 items-start gap-8">
           <FormField
             control={form.control}
@@ -188,7 +188,7 @@ const OnceOffPaymentRequestWithEmailForm = () => {
           />
         </div>
 
-        <div className="grid grid-cols-2 w-full items-center gap-4 justify-between">
+        <div className="grid w-full grid-cols-2 items-center justify-between gap-4">
           <Button onClick={() => setStep((prev) => prev - 1)} variant="outline">
             Back
           </Button>

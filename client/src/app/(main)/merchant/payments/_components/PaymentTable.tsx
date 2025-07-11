@@ -51,21 +51,21 @@ const PaymentTable = () => {
                   </TableCell>
                   <TableCell>
                     {payment.status === "pending" ? (
-                      <span className="uppercase font-medium text-orange-500">
+                      <span className="font-medium text-orange-500 uppercase">
                         ACTIVE
                       </span>
                     ) : payment.status === "success" ? (
-                      <span className="uppercase font-medium text-green-500">
+                      <span className="font-medium text-green-500 uppercase">
                         {payment.status}
                       </span>
                     ) : (
-                      <span className="uppercase font-medium text-red-500">
+                      <span className="font-medium text-red-500 uppercase">
                         {payment.status}
                       </span>
                     )}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Ellipsis className="text-muted-foreground place-self-end w-5" />
+                    <Ellipsis className="text-muted-foreground w-5 place-self-end" />
                   </TableCell>
                 </TableRow>
               ))}
@@ -74,7 +74,7 @@ const PaymentTable = () => {
       )}
 
       {isLoading && (
-        <div className="mx-auto py-8 flex items-center justify-center">
+        <div className="mx-auto flex items-center justify-center py-8">
           <LoadingSpinner label="Loading payments..." />
         </div>
       )}

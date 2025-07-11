@@ -77,7 +77,7 @@ const PaymentTypeDialog = ({ label, url }: PaymentTypeDialogProps) => {
                   alt="QR Code"
                   width={500}
                   height={500}
-                  className="w-[280px] aspect-square object-cover"
+                  className="aspect-square w-[280px] object-cover"
                 />
               </Link>
             ) : (

@@ -41,14 +41,14 @@ const PaymentProvider = ({ children }: { children: React.ReactNode }) => {
       type === "PA"
         ? "Creating pre-authorize payment..."
         : type === "CP"
-        ? "Capturing payment..."
-        : type === "RF"
-        ? "Refunding payment..."
-        : "Creating payment..."
+          ? "Capturing payment..."
+          : type === "RF"
+            ? "Refunding payment..."
+            : "Creating payment...",
     );
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments?page=${page}`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/payments?page=${page}`,
     );
 
     const data = await response.json();

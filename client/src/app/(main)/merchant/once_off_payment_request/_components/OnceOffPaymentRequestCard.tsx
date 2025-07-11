@@ -17,7 +17,7 @@ const OnceOffPaymentRequestCard = () => {
 
   return (
     <Card>
-      <CardHeader className="flex text-center flex-col gap-1">
+      <CardHeader className="flex flex-col gap-1 text-center">
         <h1 className="text-2xl font-bold">Single Payment Request</h1>
         <p className="text-sm text-gray-500">Create your payment securely.</p>
       </CardHeader>

@@ -10,7 +10,7 @@ const PreviousButton = () => {
   return step > 1 ? (
     <div
       onClick={() => setStep((prev) => prev - 1)}
-      className="border border-primary px-4 py-2 rounded-md cursor-pointer"
+      className="border-primary cursor-pointer rounded-md border px-4 py-2"
     >
       <ChevronLeft size={24} />
     </div>

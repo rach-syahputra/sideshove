@@ -6,11 +6,11 @@ interface DialogActionProps {
 
 const DialogAction = ({ label = "Doing Action..." }: DialogActionProps) => {
   return (
-    <div className="w-screen h-screen z-40 fixed top-0 left-0 flex items-center justify-center">
-      <div className="px-8 py-4 z-50 bg-background rounded-md shadow flex items-center gap-3 justify-center">
+    <div className="fixed top-0 left-0 z-40 flex h-screen w-screen items-center justify-center">
+      <div className="bg-background z-50 flex items-center justify-center gap-3 rounded-md px-8 py-4 shadow">
         <LoadingSpinner label={label} />
       </div>
-      <div className="bg-gray-700 absolute top-0 left-0 w-screen h-screen opacity-20"></div>
+      <div className="absolute top-0 left-0 h-screen w-screen bg-gray-700 opacity-20"></div>
     </div>
   );
 };

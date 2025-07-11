@@ -44,7 +44,7 @@ const OnceOffPaymentRequestWithSMSForm = () => {
   });
 
   const onSubmit = async (
-    values: z.infer<typeof onceOffPaymentRequestWithSMSFormSchema>
+    values: z.infer<typeof onceOffPaymentRequestWithSMSFormSchema>,
   ) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions`,
@@ -61,7 +61,7 @@ const OnceOffPaymentRequestWithSMSForm = () => {
           currency: values.currency,
           paymentType: values.paymentType,
         }),
-      }
+      },
     );
 
     const data = await response.json();
@@ -73,7 +73,7 @@ const OnceOffPaymentRequestWithSMSForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
         <div className="grid grid-cols-2 items-start gap-8">
           <FormField
             control={form.control}
@@ -177,7 +177,7 @@ const OnceOffPaymentRequestWithSMSForm = () => {
             render={() => (
               <FormItem>
                 <FormLabel>Mobile Number</FormLabel>
-                <div className="flex overflow-hidden rounded-md border border-input bg-background shadow-sm">
+                <div className="border-input bg-background flex overflow-hidden rounded-md border shadow-sm">
                   <FormField
                     control={form.control}
                     name="phonePrefix"
@@ -187,7 +187,7 @@ const OnceOffPaymentRequestWithSMSForm = () => {
                         value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="rounded-none border-none border-r px-2 w-24">
+                          <SelectTrigger className="w-24 rounded-none border-r border-none px-2">
                             <SelectValue />
                           </SelectTrigger>
                         </FormControl>
@@ -209,7 +209,7 @@ const OnceOffPaymentRequestWithSMSForm = () => {
                       <FormControl>
                         <Input
                           {...field}
-                          className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none"
+                          className="rounded-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                           placeholder="81234567890"
                         />
                       </FormControl>
@@ -222,7 +222,7 @@ const OnceOffPaymentRequestWithSMSForm = () => {
           />
         </div>
 
-        <div className="grid grid-cols-2 w-full items-center gap-4 justify-between">
+        <div className="grid w-full grid-cols-2 items-center justify-between gap-4">
           <Button onClick={() => setStep((prev) => prev - 1)} variant="outline">
             Back
           </Button>

@@ -26,7 +26,7 @@ interface ITransactionContext {
 }
 
 const TransactionContext = createContext<ITransactionContext | undefined>(
-  undefined
+  undefined,
 );
 
 const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
@@ -43,14 +43,14 @@ const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
       type === "PA"
         ? "Creating pre-authorize payment..."
         : type === "CP"
-        ? "Capturing payment..."
-        : type === "RF"
-        ? "Refunding payment..."
-        : "Creating payment..."
+          ? "Capturing payment..."
+          : type === "RF"
+            ? "Refunding payment..."
+            : "Creating payment...",
     );
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions?page=${page}`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions?page=${page}`,
     );
 
     const data = await response.json();
@@ -100,7 +100,7 @@ const useTransactionContext = (): ITransactionContext => {
   const context = useContext(TransactionContext);
   if (context === undefined) {
     throw new Error(
-      "useTransactionContext must be used within a TransactionProvider"
+      "useTransactionContext must be used within a TransactionProvider",
     );
   }
   return context;

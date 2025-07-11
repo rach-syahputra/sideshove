@@ -60,21 +60,21 @@ const TransactionTable = () => {
                   </TableCell>
                   <TableCell>
                     {transaction.status === "pending" ? (
-                      <span className="uppercase font-medium text-orange-500">
+                      <span className="font-medium text-orange-500 uppercase">
                         ACTIVE
                       </span>
                     ) : transaction.status === "success" ? (
-                      <span className="uppercase font-medium text-green-500">
+                      <span className="font-medium text-green-500 uppercase">
                         {transaction.status}
                       </span>
                     ) : (
-                      <span className="uppercase font-medium text-red-500">
+                      <span className="font-medium text-red-500 uppercase">
                         {transaction.status}
                       </span>
                     )}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Ellipsis className="text-muted-foreground place-self-end w-5" />
+                    <Ellipsis className="text-muted-foreground w-5 place-self-end" />
                   </TableCell>
                 </TableRow>
               ))}
@@ -83,7 +83,7 @@ const TransactionTable = () => {
       )}
 
       {isLoading && (
-        <div className="mx-auto py-8 flex items-center justify-center">
+        <div className="mx-auto flex items-center justify-center py-8">
           <LoadingSpinner label="Loading transactions..." />
         </div>
       )}

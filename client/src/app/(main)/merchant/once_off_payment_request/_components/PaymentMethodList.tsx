@@ -18,10 +18,10 @@ const PaymentMethodList = () => {
       >
         <div
           className={cn(
-            "flex flex-col items-center gap-1 justify-between text-gray-400 group-hover:text-gray-600 transition-all duration-150 ease-in-out",
+            "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
             {
               "text-primary": paymentMethod === "SMS",
-            }
+            },
           )}
         >
           <div className="h-16">
@@ -39,10 +39,10 @@ const PaymentMethodList = () => {
       >
         <div
           className={cn(
-            "flex flex-col items-center gap-1 justify-between text-gray-400 group-hover:text-gray-600 transition-all duration-150 ease-in-out",
+            "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
             {
               "text-primary": paymentMethod === "EMAIL",
-            }
+            },
           )}
         >
           <div className="h-16">
@@ -60,10 +60,10 @@ const PaymentMethodList = () => {
       >
         <div
           className={cn(
-            "flex flex-col items-center gap-1 justify-between text-gray-400 group-hover:text-gray-600 transition-all duration-150 ease-in-out",
+            "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
             {
               "text-primary": paymentMethod === "SMS_EMAIL",
-            }
+            },
           )}
         >
           <div className="flex h-16 items-center justify-center gap-0.5">
