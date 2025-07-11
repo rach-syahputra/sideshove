@@ -25,8 +25,8 @@ const CustomerDialog = ({ email, mobileNumber }: CustomerDialogProps) => {
       <DropdownMenuContent>
         <DropdownMenuLabel>Customer</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {email && <DropdownMenuItem>{email}</DropdownMenuItem>}
         {mobileNumber && <DropdownMenuItem>{mobileNumber}</DropdownMenuItem>}
+        {email && <DropdownMenuItem>{email}</DropdownMenuItem>}
       </DropdownMenuContent>
     </DropdownMenu>
   );

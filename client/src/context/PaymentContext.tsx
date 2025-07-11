@@ -58,10 +58,10 @@ const PaymentProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (page < data.data?.page_count) {
         setPage((prev) => prev + 1);
+        setHasMore(true);
+      } else {
+        setHasMore(false);
       }
-      setHasMore(true);
-    } else {
-      setHasMore(false);
     }
     setIsLoading(false);
     setLoadingLabel("");
@@ -69,7 +69,7 @@ const PaymentProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     fetchPayments();
-  }, [page]);
+  }, []);
 
   return (
     <PaymentContext.Provider
