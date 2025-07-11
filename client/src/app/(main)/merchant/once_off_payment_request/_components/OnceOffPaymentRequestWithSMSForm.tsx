@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { toast } from "sonner";
+import { Check } from "lucide-react";
 
 import { CURRENCIES, phonePrefixes } from "@/lib/constants/transaction";
 import { onceOffPaymentRequestWithSMSFormSchema } from "@/lib/validations/transaction";
@@ -67,7 +69,15 @@ const OnceOffPaymentRequestWithSMSForm = () => {
     const data = await response.json();
 
     if (data.data.result === "success") {
+      toast("Payment request successfully created", {
+        icon: <Check className="w-5 text-green-600" />,
+        position: "top-center",
+      });
       router.push("/merchant/transactions");
+    } else {
+      form.setError("root", {
+        message: data.data.error_message,
+      });
     }
   };
 
@@ -221,6 +231,12 @@ const OnceOffPaymentRequestWithSMSForm = () => {
             )}
           />
         </div>
+
+        {form.formState.errors.root && (
+          <p className="text-destructive text-sm">
+            {form.formState.errors.root.message}
+          </p>
+        )}
 
         <div className="grid w-full grid-cols-2 items-center justify-between gap-4">
           <Button onClick={() => setStep((prev) => prev - 1)} variant="outline">

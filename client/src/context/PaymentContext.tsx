@@ -53,8 +53,6 @@ const PaymentProvider = ({ children }: { children: React.ReactNode }) => {
 
     const data = await response.json();
 
-    console.log("Payments", data);
-
     if (data.data?.payments?.length > 0) {
       setPayments((prev) => [...prev, ...data.data.payments]);
 

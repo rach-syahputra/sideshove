@@ -55,8 +55,6 @@ const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
 
     const data = await response.json();
 
-    console.log("transactions", data);
-
     if (data.data?.transactions?.length > 0) {
       setTransactions((prev) => [...prev, ...data.data.transactions]);
 
