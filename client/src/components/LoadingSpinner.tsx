@@ -1,13 +1,23 @@
+import { cn } from "@/lib/utils";
+
 interface LoadingSpinnerProps {
   label?: string;
+  size?: "sm" | "md" | "lg";
 }
 
-const LoadingSpinner = ({ label = "Loading..." }: LoadingSpinnerProps) => {
+const LoadingSpinner = ({ label, size = "md" }: LoadingSpinnerProps) => {
   return (
     <div role="status" className="flex items-center justify-center gap-2">
       <svg
         aria-hidden="true"
-        className="inline h-5 w-5 animate-spin fill-gray-600 text-gray-200 dark:fill-gray-300 dark:text-gray-600"
+        className={cn(
+          "inline animate-spin fill-gray-600 text-gray-200 dark:fill-gray-300 dark:text-gray-600",
+          {
+            "h-4 w-4": size === "sm",
+            "h-5 w-5": size === "md",
+            "h-7 w-7": size === "lg",
+          },
+        )}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -21,7 +31,7 @@ const LoadingSpinner = ({ label = "Loading..." }: LoadingSpinnerProps) => {
           fill="currentFill"
         />
       </svg>
-      <span className="text-gray-700">{label}</span>
+      {label && <span className="text-gray-700">{label}</span>}
     </div>
   );
 };

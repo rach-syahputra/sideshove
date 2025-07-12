@@ -1,5 +1,4 @@
-import { getCountries, getCountryCallingCode } from "libphonenumber-js";
-import { TransactionRequestMethod } from "../types/transaction";
+import { PaymentType, TransactionRequestMethod } from "../types/transaction";
 
 interface RequestMethod {
   id: TransactionRequestMethod;
@@ -24,18 +23,9 @@ export const CURRENCIES = [
   { id: "GBP", label: "GBP" },
 ];
 
-const phoneCodes = new Set<string>();
-export const phonePrefixes = getCountries()
-  .map((country) => {
-    const code = `+${getCountryCallingCode(country)}`;
-    return {
-      label: `${code} (${country})`,
-      value: code,
-      key: `${country}-${code}`, // ensures uniqueness
-    };
-  })
-  .filter(({ value }) => {
-    if (phoneCodes.has(value)) return false;
-    phoneCodes.add(value);
-    return true;
-  });
+export const PAYMENT_TYPE_LABELS: Record<PaymentType, string> = {
+  PA: "Pre-Authorize",
+  DB: "Debit",
+  CP: "Capture",
+  RF: "Refund",
+};
