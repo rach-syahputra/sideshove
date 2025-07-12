@@ -16,7 +16,7 @@ interface CustomerDialogProps {
 const CustomerDialog = ({ email, mobileNumber }: CustomerDialogProps) => {
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger className="text-blue-700">
+      <DropdownMenuTrigger className="text-blue-700 transition-all duration-150 ease-in-out hover:text-blue-500">
         {getCustomer({
           email,
           mobileNumber,

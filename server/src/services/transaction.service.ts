@@ -1,5 +1,6 @@
 import {
   CreateTransactionRequest,
+  DeleteTransactionRequest,
   GetTransactionDetailRequest,
   GetTransactionsRequest,
   UpdateTransactionRequest,
@@ -86,6 +87,23 @@ class TransactionService {
       },
       body: JSON.stringify(transactionData),
     });
+
+    const data = await response.json();
+
+    return data;
+  };
+
+  delete = async (req: DeleteTransactionRequest) => {
+    const response = await fetch(
+      `${MP_API_BASE_URL}/payment-requests/${req.transactionId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${MP_ACCESS_KEY}`,
+        },
+      }
+    );
 
     const data = await response.json();
 

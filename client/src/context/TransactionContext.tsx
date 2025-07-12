@@ -18,6 +18,8 @@ interface ITransactionContext {
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   hasMore: boolean;
   setHasMore: Dispatch<SetStateAction<boolean>>;
+  page: number;
+  setPage: Dispatch<SetStateAction<number>>;
   loadingLabel: string;
   setLoadingLabel: Dispatch<SetStateAction<string>>;
   type: string;
@@ -82,6 +84,8 @@ const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
         setIsLoading,
         hasMore,
         setHasMore,
+        page,
+        setPage,
         loadingLabel,
         setLoadingLabel,
         type,

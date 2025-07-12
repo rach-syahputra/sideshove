@@ -11,7 +11,7 @@ const TransactionsPage = () => {
   return (
     <main>
       <div className="mx-auto max-w-7xl p-4">
-        <div className="flex flex-col gap-6 py-8">
+        <div className="flex flex-col gap-6">
           <div className="flex flex-col text-center">
             <h1 className="text-center text-2xl font-bold">Payment History</h1>
             <p className="text-sm text-gray-400">

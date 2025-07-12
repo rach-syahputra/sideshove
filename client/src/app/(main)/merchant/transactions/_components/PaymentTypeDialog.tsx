@@ -63,7 +63,7 @@ const PaymentTypeDialog = ({ label, url }: PaymentTypeDialogProps) => {
         setOpen(value);
       }}
     >
-      <DialogTrigger className="flex items-center gap-2 text-blue-700">
+      <DialogTrigger className="flex items-center gap-2 text-blue-700 transition-all duration-150 ease-in-out hover:text-blue-500">
         <QrCode className="w-4" /> {label}
       </DialogTrigger>
       <DialogContent className="w-[280px]">

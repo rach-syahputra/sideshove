@@ -104,6 +104,23 @@ class TransactionController {
       next(error);
     }
   };
+
+  delete = async (req: Request, res: Response, next: NextFunction) => {
+    const { transactionId } = req.params;
+
+    try {
+      const response = await this.transactionService.delete({
+        transactionId,
+      });
+
+      res.status(200).json({
+        message: "Payment request deleted successfully",
+        data: response,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default TransactionController;

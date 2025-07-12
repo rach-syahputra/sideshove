@@ -30,3 +30,7 @@ export interface UpdateTransactionRequest {
   paymentType: PaymentType;
   mobileNumber: string;
 }
+
+export interface DeleteTransactionRequest {
+  transactionId: string;
+}

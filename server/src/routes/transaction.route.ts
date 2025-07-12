@@ -16,6 +16,7 @@ class TransactionRoute {
     this.router.get("/:transactionId", this.transactionController.get);
     this.router.post("/", this.transactionController.create);
     this.router.put("/:transactionId", this.transactionController.update);
+    this.router.delete("/:transactionId", this.transactionController.delete);
   }
 
   getRouter(): Router {

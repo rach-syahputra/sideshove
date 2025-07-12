@@ -32,19 +32,17 @@ const PaymentDetail = ({ transactionId }: PaymentDetailProps) => {
     }
   }, [activeTransactions, transactionId]);
 
-  useEffect(() => {
-    console.log("transaction", transaction);
-  }, [transaction]);
-
   return (
     <Collapsible
       open={activeTransactionIds.includes(transactionId)}
       className="mb-4 flex w-full flex-col gap-2"
     >
       <CollapsibleContent className="text-wrap">
-        <Card className="gap-2 rounded-md p-2">
+        <Card className="flex min-h-[88px] w-full flex-col gap-2 rounded-md p-2">
           {isLoading && !transaction ? (
-            <LoadingSpinner size="lg" />
+            <div className="flex min-h-[60px] w-full items-center justify-center">
+              <LoadingSpinner size="lg" />
+            </div>
           ) : !isLoading && !transaction ? (
             <p>Unable to rececive transaction detail</p>
           ) : (
