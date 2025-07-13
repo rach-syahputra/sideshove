@@ -23,10 +23,12 @@ export type PaymentType =
   | "PA"
   | "CP"
   | "RF"
+  | "RV"
   | "CC.DB"
   | "CC.PA"
   | "CC.CP"
-  | "CC.RF";
+  | "CC.RF"
+  | "CC.RV";
 
 export type TransactionType = "once-off" | "pos-payment";
 

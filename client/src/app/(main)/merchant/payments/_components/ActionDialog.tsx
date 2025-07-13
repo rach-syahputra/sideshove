@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { createReversal } from "@/lib/apis/reversal";
 
 interface ActionDialogProps {
   paymentId: string;
@@ -27,7 +28,10 @@ const ActionDialog = ({
   mobileNumber,
   paymentType,
 }: ActionDialogProps) => {
-  const isDisabled = paymentType === "CC.CP" || paymentType === "CC.RF";
+  const isDisabled =
+    paymentType === "CC.CP" ||
+    paymentType === "CC.RF" ||
+    paymentType === "CC.RV";
 
   const handleCreateRefund = async () => {
     const response = await createRefund({
@@ -73,6 +77,28 @@ const ActionDialog = ({
     }
   };
 
+  const handleReversalCapture = async () => {
+    const response = await createReversal({
+      paymentId,
+      email: email || "",
+      mobileNumber: mobileNumber || "",
+    });
+
+    if (response.data.status === "reversal") {
+      window.location.reload();
+
+      toast("Reversal successfully created", {
+        icon: <Check className="w-5 text-green-600" />,
+        position: "top-center",
+      });
+    } else {
+      toast(response.data?.message || "Unable to create reversal", {
+        icon: <X className="text-destructive w-5" />,
+        position: "top-center",
+      });
+    }
+  };
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger disabled={isDisabled}>
@@ -90,9 +116,20 @@ const ActionDialog = ({
         )}
 
         {paymentType === "CC.PA" && (
-          <DropdownMenuItem onClick={handleCreateCapture}>
-            Capture
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem
+              onClick={handleCreateCapture}
+              className="font-medium"
+            >
+              Capture
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={handleReversalCapture}
+              className="font-medium"
+            >
+              Reversal
+            </DropdownMenuItem>
+          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

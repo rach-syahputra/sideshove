@@ -47,11 +47,17 @@ const ActionDialog = ({ transactionId, status }: ActionDialogProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <Link href={`/merchant/once_off_payment_request/${transactionId}`}>
+          <Link
+            href={`/merchant/once_off_payment_request/${transactionId}`}
+            className="font-medium"
+          >
             Edit Request
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleDeleteTransaction}>
+        <DropdownMenuItem
+          onClick={handleDeleteTransaction}
+          className="font-medium"
+        >
           Delete Transaction
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -85,7 +85,8 @@ const PaymentTable = () => {
                               "text-yellow-500":
                                 payment.payment_type === "CC.CP",
                               "text-destructive":
-                                payment.payment_type === "CC.RF",
+                                payment.payment_type === "CC.RF" ||
+                                payment.payment_type === "CC.RV",
                             })}
                           >
                             {PAYMENT_TYPE_LABELS[payment.payment_type]}

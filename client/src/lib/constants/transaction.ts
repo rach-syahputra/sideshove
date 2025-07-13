@@ -32,10 +32,12 @@ export const PAYMENT_TYPE_LABELS: Record<PaymentType, string> = {
   DB: "Debit",
   CP: "Capture",
   RF: "Refund",
+  RV: "Reversal",
   "CC.PA": "Pre-Authorize",
   "CC.DB": "Debit",
   "CC.CP": "Capture",
   "CC.RF": "Refund",
+  "CC.RV": "Reversal",
 };
 
 export const TRANSACTION_TYPE_LABELS: Record<TransactionType, string> = {
