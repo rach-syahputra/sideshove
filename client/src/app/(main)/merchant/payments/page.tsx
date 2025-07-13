@@ -3,6 +3,7 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import { usePaymentContext } from "@/context/PaymentContext";
+import { PaymentDetailProvider } from "@/context/PaymentDetailContext";
 import PaymentTable from "./_components/PaymentTable";
 
 const TransactionsPage = () => {
@@ -19,14 +20,16 @@ const TransactionsPage = () => {
             </p>
           </div>
 
-          <InfiniteScroll
-            dataLength={payments.length}
-            next={fetchPayments}
-            hasMore={hasMore}
-            loader={<div></div>}
-          >
-            <PaymentTable />
-          </InfiniteScroll>
+          <PaymentDetailProvider>
+            <InfiniteScroll
+              dataLength={payments.length}
+              next={fetchPayments}
+              hasMore={hasMore}
+              loader={<div></div>}
+            >
+              <PaymentTable />
+            </InfiniteScroll>
+          </PaymentDetailProvider>
         </div>
       </div>
     </main>

@@ -5,18 +5,18 @@ import { useEffect, useState } from "react";
 import { Transaction } from "@/lib/types/transaction";
 import { PAYMENT_TYPE_LABELS } from "@/lib/constants/transaction";
 import { formatTransactionDetailDate, getRequestMethods } from "@/lib/utils";
-import { usePaymentDetailContext } from "@/context/PaymentDetailContext";
+import { useTransactionDetailContext } from "@/context/TransactionDetailContext";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
-import { Card } from "./ui/card";
-import LoadingSpinner from "./LoadingSpinner";
+import { Card } from "@/components/ui/card";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
-interface PaymentDetailProps {
+interface TransactionDetailProps {
   transactionId: string;
 }
 
-const PaymentDetail = ({ transactionId }: PaymentDetailProps) => {
+const TransactionDetail = ({ transactionId }: TransactionDetailProps) => {
   const { isLoading, activeTransactionIds, activeTransactions } =
-    usePaymentDetailContext();
+    useTransactionDetailContext();
   const [transaction, setTransaction] = useState<Transaction | null>(null);
 
   useEffect(() => {
@@ -94,4 +94,4 @@ const PaymentDetail = ({ transactionId }: PaymentDetailProps) => {
   );
 };
 
-export default PaymentDetail;
+export default TransactionDetail;

@@ -1,4 +1,8 @@
-import { PaymentType, TransactionRequestMethod } from "../types/transaction";
+import {
+  PaymentType,
+  TransactionRequestMethod,
+  TransactionType,
+} from "../types/transaction";
 
 interface RequestMethod {
   id: TransactionRequestMethod;
@@ -28,4 +32,13 @@ export const PAYMENT_TYPE_LABELS: Record<PaymentType, string> = {
   DB: "Debit",
   CP: "Capture",
   RF: "Refund",
+  "CC.PA": "Pre-Authorize",
+  "CC.DB": "Debit",
+  "CC.CP": "Capture",
+  "CC.RF": "Refund",
+};
+
+export const TRANSACTION_TYPE_LABELS: Record<TransactionType, string> = {
+  "once-off": "Single",
+  "pos-payment": "Recurring",
 };

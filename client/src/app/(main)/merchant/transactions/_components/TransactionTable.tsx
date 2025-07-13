@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react";
 
 import { cn, formatDate } from "@/lib/utils";
 import { useTransactionContext } from "@/context/TransactionContext";
-import { usePaymentDetailContext } from "@/context/PaymentDetailContext";
+import { useTransactionDetailContext } from "@/context/TransactionDetailContext";
 import {
   Table,
   TableBody,
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/table";
 import DialogAction from "@/components/DialogAction";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import PaymentDetail from "@/components/PaymentDetail";
+import PaymentDetail from "@/app/(main)/merchant/transactions/_components/TransactionDetail";
 import PaymentTypeDialog from "./PaymentTypeDialog";
 import ActionDialog from "./ActionDialog";
 import CustomerDialog from "./CustomerDialog";
@@ -27,7 +27,7 @@ const TransactionTable = () => {
     activeTransactionIds,
     setActiveTransactionIds,
     updateActiveTransactions,
-  } = usePaymentDetailContext();
+  } = useTransactionDetailContext();
   const [loadingLabel] = useState<string>("");
 
   const handleClickDetail = (transactionId: string) => {

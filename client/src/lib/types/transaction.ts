@@ -17,7 +17,18 @@ export type PaymentStatusType =
   | "EXPIRED"
   | "REFUNDED"
   | "CAPTURED";
-export type PaymentType = "DB" | "PA" | "CP" | "RF";
+
+export type PaymentType =
+  | "DB"
+  | "PA"
+  | "CP"
+  | "RF"
+  | "CC.DB"
+  | "CC.PA"
+  | "CC.CP"
+  | "CC.RF";
+
+export type TransactionType = "once-off" | "pos-payment";
 
 export interface Transaction {
   attach_recepit_on_email: boolean;
@@ -56,15 +67,15 @@ export interface Transaction {
 
 export interface Payment {
   payment_id: string;
-  reference_payment_id?: string;
+  reference_payment_id: string;
   transaction_id: string;
-  transaction_type: string;
+  transaction_type: TransactionType;
   reference_number: string;
   mobile_number: string;
   email: string;
   amount: number;
   currency: TransactionCurrencyType;
-  payment_type: string;
+  payment_type: PaymentType;
   payment_date: string;
   status: TransactionStatusType;
   result_description: string;

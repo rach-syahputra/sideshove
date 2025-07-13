@@ -13,6 +13,7 @@ class PaymentRoute {
 
   private initializeRoutes(): void {
     this.router.get("/", this.paymentController.getAll);
+    this.router.get("/:paymentId", this.paymentController.getById);
   }
 
   getRouter(): Router {

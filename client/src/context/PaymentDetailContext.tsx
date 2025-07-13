@@ -8,19 +8,19 @@ import {
   useState,
 } from "react";
 
-import { fetchTransactionDetail } from "@/lib/apis/transaction";
-import { Transaction } from "@/lib/types/transaction";
+import { Payment } from "@/lib/types/transaction";
+import { fetchPaymentDetail } from "@/lib/apis/payment";
 
 interface IPaymentDetailContext {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
-  activeTransactionIds: string[];
-  setActiveTransactionIds: Dispatch<SetStateAction<string[]>>;
-  activeTransactions: Transaction[];
-  setActiveTransactions: Dispatch<SetStateAction<Transaction[]>>;
-  updateActiveTransactions: (transactionId: string) => void;
+  activePaymentIds: string[];
+  setActivePaymentIds: Dispatch<SetStateAction<string[]>>;
+  activePayments: Payment[];
+  setActivePayments: Dispatch<SetStateAction<Payment[]>>;
+  updateActivePayments: (paymentId: string) => void;
 }
 
 const PaymentDetailContext = createContext<IPaymentDetailContext | undefined>(
@@ -30,33 +30,28 @@ const PaymentDetailContext = createContext<IPaymentDetailContext | undefined>(
 const PaymentDetailProvider = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [activeTransactionIds, setActiveTransactionIds] = useState<string[]>(
-    [],
-  );
-  const [activeTransactions, setActiveTransactions] = useState<Transaction[]>(
-    [],
-  );
+  const [activePaymentIds, setActivePaymentIds] = useState<string[]>([]);
+  const [activePayments, setActivePayments] = useState<Payment[]>([]);
 
-  const updateActiveTransactions = async (transactionId: string) => {
-    // if active transaction already exist, remove it from activeTransactions
+  const updateActivePayments = async (paymentId: string) => {
+    // if active payment already exist, remove it from activePayments
     // else add it to activeTransactions
     setIsLoading(true);
 
-    const existActiveTransactionid = activeTransactionIds.find(
-      (activeTransactionId) => activeTransactionId === transactionId,
+    const existActivePaymentId = activePaymentIds.find(
+      (activePaymentId) => activePaymentId === paymentId,
     );
 
-    if (!existActiveTransactionid) {
-      const response = await fetchTransactionDetail(transactionId);
+    if (!existActivePaymentId) {
+      const response = await fetchPaymentDetail(paymentId);
 
-      if (response?.data?.transaction) {
-        setActiveTransactions((prev) => [...prev, response.data.transaction]);
+      if (response?.data?.payment) {
+        setActivePayments((prev) => [...prev, response.data.payment]);
       }
     } else {
-      setActiveTransactions(
-        activeTransactions.filter(
-          (activeTransaction) =>
-            activeTransaction.transaction_id !== transactionId,
+      setActivePayments(
+        activePayments.filter(
+          (activePayment) => activePayment.payment_id !== paymentId,
         ),
       );
     }
@@ -67,15 +62,15 @@ const PaymentDetailProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <PaymentDetailContext.Provider
       value={{
-        activeTransactionIds,
-        setActiveTransactionIds,
+        activePaymentIds,
+        setActivePaymentIds,
         isOpen,
         setIsOpen,
         isLoading,
         setIsLoading,
-        activeTransactions,
-        setActiveTransactions,
-        updateActiveTransactions,
+        activePayments,
+        setActivePayments,
+        updateActivePayments,
       }}
     >
       {children}
