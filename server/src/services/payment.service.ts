@@ -17,6 +17,7 @@ class PaymentService {
 
     return data;
   };
+
   getById = async (req: GetPaymentByIdRequest) => {
     const response = await fetch(
       `${MP_API_BASE_URL}/payments/${req.paymentId}`,

@@ -1,9 +1,10 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import { ChevronRight, Ellipsis } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 import { cn, formatDate } from "@/lib/utils";
+import { PAYMENT_TYPE_LABELS } from "@/lib/constants/transaction";
 import { usePaymentContext } from "@/context/PaymentContext";
 import { usePaymentDetailContext } from "@/context/PaymentDetailContext";
 import {
@@ -16,8 +17,8 @@ import {
 } from "@/components/ui/table";
 import DialogAction from "@/components/DialogAction";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { PAYMENT_TYPE_LABELS } from "@/lib/constants/transaction";
 import PaymentDetail from "./PaymentDetail";
+import ActionDialog from "./ActionDialog";
 
 const PaymentTable = () => {
   const { payments, isLoading } = usePaymentContext();
@@ -121,7 +122,13 @@ const PaymentTable = () => {
                         />
                       </TableCell>
                       <TableCell className="text-right">
-                        <Ellipsis className="text-muted-foreground w-5 place-self-end" />
+                        <ActionDialog
+                          paymentId={payment.payment_id}
+                          amount={payment.amount}
+                          paymentType={payment.payment_type}
+                          email={payment.email}
+                          mobileNumber={payment.mobile_number}
+                        />
                       </TableCell>
                     </TableRow>
 
