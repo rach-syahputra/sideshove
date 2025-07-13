@@ -3,6 +3,7 @@ import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 import { createRefund } from "@/lib/apis/refund";
+import { createCapture } from "@/lib/apis/capture";
 import { PaymentType } from "@/lib/types/transaction";
 import {
   DropdownMenu,
@@ -26,6 +27,8 @@ const ActionDialog = ({
   mobileNumber,
   paymentType,
 }: ActionDialogProps) => {
+  const isDisabled = paymentType === "CC.CP" || paymentType === "CC.RF";
+
   const handleCreateRefund = async () => {
     const response = await createRefund({
       paymentId,
@@ -49,17 +52,48 @@ const ActionDialog = ({
     }
   };
 
+  const handleCreateCapture = async () => {
+    const response = await createCapture({
+      paymentId,
+      amount,
+    });
+
+    if (response.data.status === "capture") {
+      window.location.reload();
+
+      toast("Refund successfully created", {
+        icon: <Check className="w-5 text-green-600" />,
+        position: "top-center",
+      });
+    } else {
+      toast(response.data?.message || "Unable to create capture", {
+        icon: <X className="text-destructive w-5" />,
+        position: "top-center",
+      });
+    }
+  };
+
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger disabled={paymentType !== "CC.DB"}>
+      <DropdownMenuTrigger disabled={isDisabled}>
         <Ellipsis
           className={cn("w-5 place-self-end", {
-            "text-gray-400": paymentType !== "CC.DB",
+            "text-gray-400": isDisabled,
           })}
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onClick={handleCreateRefund}>Refund</DropdownMenuItem>
+        {paymentType === "CC.DB" && (
+          <DropdownMenuItem onClick={handleCreateRefund}>
+            Refund
+          </DropdownMenuItem>
+        )}
+
+        {paymentType === "CC.PA" && (
+          <DropdownMenuItem onClick={handleCreateCapture}>
+            Capture
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
