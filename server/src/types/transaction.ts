@@ -39,6 +39,10 @@ export interface UpdateTransactionRequest {
   amount: number;
   paymentType: PaymentType;
   mobileNumber: string;
+  initialPaymentAmount?: number;
+  paymentFrequency?: PaymentFrequency;
+  paymentStartDate?: string;
+  paymentEndDate?: string;
 }
 
 export interface DeleteTransactionRequest {

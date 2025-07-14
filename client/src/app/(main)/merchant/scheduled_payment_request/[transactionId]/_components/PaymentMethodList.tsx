@@ -3,22 +3,24 @@
 import { Mail, Smartphone } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { useScheduledPaymentContext } from "@/context/ScheduledPaymentContext";
+import { useScheduledEditPaymentContext } from "@/context/ScheduledEditPaymentContext";
 import { Card } from "@/components/ui/card";
 
 const PaymentMethodList = () => {
-  const { requestMethods } = useScheduledPaymentContext();
+  const { requestMethods, setRequestMethods } =
+    useScheduledEditPaymentContext();
 
   return (
     <div className="grid grid-cols-4 gap-4">
       <Card
+        onClick={() => setRequestMethods(["SMS"])}
         className={cn("group cursor-pointer", {
           "border-primary": requestMethods?.every((method) => method === "SMS"),
         })}
       >
         <div
           className={cn(
-            "flex flex-col items-center justify-between gap-1 text-gray-400",
+            "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
             {
               "text-primary": requestMethods?.every(
                 (method) => method === "SMS",
@@ -34,6 +36,7 @@ const PaymentMethodList = () => {
       </Card>
 
       <Card
+        onClick={() => setRequestMethods(["EMAIL"])}
         className={cn("group cursor-pointer", {
           "border-primary": requestMethods?.every(
             (method) => method === "EMAIL",
@@ -42,7 +45,7 @@ const PaymentMethodList = () => {
       >
         <div
           className={cn(
-            "flex flex-col items-center justify-between gap-1 text-gray-400",
+            "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
             {
               "text-primary": requestMethods?.every(
                 (method) => method === "EMAIL",
@@ -58,6 +61,7 @@ const PaymentMethodList = () => {
       </Card>
 
       <Card
+        onClick={() => setRequestMethods(["EMAIL", "SMS"])}
         className={cn("group cursor-pointer", {
           "border-primary":
             requestMethods?.includes("SMS") &&
@@ -66,7 +70,7 @@ const PaymentMethodList = () => {
       >
         <div
           className={cn(
-            "flex flex-col items-center justify-between gap-1 text-gray-400",
+            "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
             {
               "text-primary":
                 requestMethods?.includes("SMS") &&

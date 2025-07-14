@@ -4,7 +4,10 @@ import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 import { deleteTransaction } from "@/lib/apis/transaction";
-import { TransactionStatusType } from "@/lib/types/transaction";
+import {
+  PaymentFrequency,
+  TransactionStatusType,
+} from "@/lib/types/transaction";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,9 +18,14 @@ import {
 interface ActionDialogProps {
   transactionId: string;
   status: TransactionStatusType;
+  paymentFrequency: PaymentFrequency;
 }
 
-const ActionDialog = ({ transactionId, status }: ActionDialogProps) => {
+const ActionDialog = ({
+  transactionId,
+  status,
+  paymentFrequency,
+}: ActionDialogProps) => {
   const handleDeleteTransaction = async () => {
     const response = await deleteTransaction(transactionId);
 
@@ -48,7 +56,7 @@ const ActionDialog = ({ transactionId, status }: ActionDialogProps) => {
       <DropdownMenuContent>
         <DropdownMenuItem>
           <Link
-            href={`/merchant/once_off_payment_request/${transactionId}`}
+            href={`/merchant/${paymentFrequency === "ONE-TIME" ? "once_off_payment_request" : "scheduled_payment_request"}/${transactionId}`}
             className="font-medium"
           >
             Edit Request

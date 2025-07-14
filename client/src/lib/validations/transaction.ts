@@ -71,14 +71,33 @@ const scheduledPaymentRequestFormSchema = z.object({
       required_error: "Amount is required",
     })
     .min(1, "Amount cannot be 0"),
-  paymentType: z.enum(["PA", "DB", "CP", "RF"], {
-    message: "Invalid payment type",
-    required_error: "Payment type is required",
-  }),
-  paymentFrequency: z.enum(["WEEKLY", "MONTHLY", "QUARTERLY", "YEARLY"], {
-    message: "Invalid payment frequency",
-    required_error: "Payment frequency is required",
-  }),
+  paymentType: z.enum(
+    [
+      "PA",
+      "DB",
+      "CP",
+      "RF",
+      "RV",
+      "CC.PA",
+      "CC.DB",
+      "CC.CP",
+      "CC.RF",
+      "CC.RV",
+      "CC.SD",
+      "CC.RG",
+    ],
+    {
+      message: "Invalid payment type",
+      required_error: "Payment type is required",
+    },
+  ),
+  paymentFrequency: z.enum(
+    ["ONE-TIME", "WEEKLY", "MONTHLY", "QUARTERLY", "YEARLY"],
+    {
+      message: "Invalid payment frequency",
+      required_error: "Payment frequency is required",
+    },
+  ),
   initialPaymentAmount: z
     .number({
       message: "Invalid initial payment amount",

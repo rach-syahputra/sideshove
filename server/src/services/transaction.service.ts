@@ -89,6 +89,14 @@ class TransactionService {
       fixed_amount: true,
       payment_type: req.paymentType,
       mobile_number: req.mobileNumber,
+      payment_frequency: req.paymentFrequency || "ONE-TIME",
+      ...(req.initialPaymentAmount
+        ? { initial_payment_amount: req.initialPaymentAmount }
+        : {}),
+      ...(req.paymentStartDate
+        ? { payment_start_date: req.paymentStartDate }
+        : {}),
+      ...(req.paymentEndDate ? { payment_end_date: req.paymentEndDate } : {}),
     };
 
     const response = await fetch(`${MP_API_BASE_URL}/payment-requests`, {

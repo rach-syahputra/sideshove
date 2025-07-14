@@ -127,6 +127,7 @@ const TransactionTable = () => {
                         <ActionDialog
                           transactionId={transaction.transaction_id}
                           status={transaction.status}
+                          paymentFrequency={transaction.payment_frequency}
                         />
                       </TableCell>
                     </TableRow>

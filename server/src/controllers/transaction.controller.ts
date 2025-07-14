@@ -91,6 +91,10 @@ class TransactionController {
       currency,
       paymentType,
       mobileNumber,
+      paymentFrequency,
+      initialPaymentAmount,
+      paymentStartDate,
+      paymentEndDate,
     } = req.body;
 
     try {
@@ -103,6 +107,10 @@ class TransactionController {
         currency,
         paymentType,
         mobileNumber,
+        paymentFrequency,
+        initialPaymentAmount,
+        paymentStartDate,
+        paymentEndDate,
       });
 
       res.status(200).json({
