@@ -1,24 +1,25 @@
 "use client";
 
-import { Mail, Smartphone } from "lucide-react";
+import { Link, Mail, Smartphone } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { useScheduledPaymentContext } from "@/context/ScheduledPaymentContext";
 import { Card } from "@/components/ui/card";
 
 const PaymentMethodList = () => {
-  const { requestMethods } = useScheduledPaymentContext();
+  const { requestMethods, setRequestMethods } = useScheduledPaymentContext();
 
   return (
     <div className="grid grid-cols-4 gap-4">
       <Card
+        onClick={() => setRequestMethods(["SMS"])}
         className={cn("group cursor-pointer", {
           "border-primary": requestMethods?.every((method) => method === "SMS"),
         })}
       >
         <div
           className={cn(
-            "flex flex-col items-center justify-between gap-1 text-gray-400",
+            "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
             {
               "text-primary": requestMethods?.every(
                 (method) => method === "SMS",
@@ -34,6 +35,7 @@ const PaymentMethodList = () => {
       </Card>
 
       <Card
+        onClick={() => setRequestMethods(["EMAIL"])}
         className={cn("group cursor-pointer", {
           "border-primary": requestMethods?.every(
             (method) => method === "EMAIL",
@@ -42,7 +44,7 @@ const PaymentMethodList = () => {
       >
         <div
           className={cn(
-            "flex flex-col items-center justify-between gap-1 text-gray-400",
+            "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
             {
               "text-primary": requestMethods?.every(
                 (method) => method === "EMAIL",
@@ -58,6 +60,7 @@ const PaymentMethodList = () => {
       </Card>
 
       <Card
+        onClick={() => setRequestMethods(["SMS", "EMAIL"])}
         className={cn("group cursor-pointer", {
           "border-primary":
             requestMethods?.includes("SMS") &&
@@ -66,7 +69,7 @@ const PaymentMethodList = () => {
       >
         <div
           className={cn(
-            "flex flex-col items-center justify-between gap-1 text-gray-400",
+            "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
             {
               "text-primary":
                 requestMethods?.includes("SMS") &&
@@ -82,26 +85,28 @@ const PaymentMethodList = () => {
         </div>
       </Card>
 
-      {/* <Card
-          onClick={() => setPaymentMethod("LINK")}
-          className={cn("group cursor-pointer", {
-            "border-primary": paymentMethod === "LINK",
-          })}
+      <Card
+        onClick={() => setRequestMethods(["WEB"])}
+        className={cn("group cursor-pointer", {
+          "border-primary": requestMethods?.every((method) => method === "WEB"),
+        })}
+      >
+        <div
+          className={cn(
+            "flex flex-col items-center justify-between gap-1 text-gray-400 transition-all duration-150 ease-in-out group-hover:text-gray-600",
+            {
+              "text-primary": requestMethods?.every(
+                (method) => method === "WEB",
+              ),
+            },
+          )}
         >
-          <div
-            className={cn(
-              "flex flex-col items-center gap-1 justify-between text-gray-400 group-hover:text-gray-600 transition-all duration-150 ease-in-out",
-              {
-                "text-primary": paymentMethod === "LINK",
-              }
-            )}
-          >
-            <div className="h-16">
-              <Link size={58} strokeWidth={1} />
-            </div>
-            <span className="font-semibold">Create a Web Link</span>
+          <div className="h-16">
+            <Link size={50} strokeWidth={1} />
           </div>
-        </Card> */}
+          <span className="font-semibold">Create a Web Link</span>
+        </div>
+      </Card>
     </div>
   );
 };

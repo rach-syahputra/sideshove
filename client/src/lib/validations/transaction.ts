@@ -56,7 +56,7 @@ export const onceOffPaymentRequestWithSMSAndEmailFormSchema =
   });
 
 // scheduled/recurring payment request
-const scheduledPaymentRequestFormSchema = z.object({
+export const scheduledPaymentRequestFormSchema = z.object({
   referenceNumber: z.string({
     message: "Invalid reference number",
     required_error: "Reference number is required",

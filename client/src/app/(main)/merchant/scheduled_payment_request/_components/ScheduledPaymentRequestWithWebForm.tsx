@@ -10,13 +10,12 @@ import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
 import { CURRENCIES } from "@/lib/constants/transaction";
-import { scheduledPaymentRequestWithSMSFormSchema } from "@/lib/validations/transaction";
-import { useScheduledEditPaymentContext } from "@/context/ScheduledEditPaymentContext";
+import { scheduledPaymentRequestFormSchema } from "@/lib/validations/transaction";
+import { useScheduledPaymentContext } from "@/context/ScheduledPaymentContext";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -38,40 +37,36 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 
-const ScheduledPaymentRequestWithSMSForm = () => {
+const ScheduledPaymentRequestWithWebForm = () => {
   const router = useRouter();
-  const { setStep, transaction } = useScheduledEditPaymentContext();
+  const { setStep } = useScheduledPaymentContext();
 
-  const form = useForm<
-    z.infer<typeof scheduledPaymentRequestWithSMSFormSchema>
-  >({
-    resolver: zodResolver(scheduledPaymentRequestWithSMSFormSchema),
+  const form = useForm<z.infer<typeof scheduledPaymentRequestFormSchema>>({
+    resolver: zodResolver(scheduledPaymentRequestFormSchema),
     defaultValues: {
-      referenceNumber: transaction.reference_number,
-      mobileNumber: transaction.mobile_number,
-      amount: Number(transaction.amount),
-      currency: transaction.currency,
-      paymentType: transaction.payment_type,
-      paymentFrequency: transaction.payment_frequency,
+      referenceNumber: "",
+      amount: 0,
+      currency: "ZAR",
+      paymentType: "DB",
+      paymentFrequency: "MONTHLY",
       initialPaymentAmount: 0,
-      paymentStartDate: new Date(transaction.payment_start_date),
+      paymentStartDate: new Date(),
     },
   });
 
   const onSubmit = async (
-    values: z.infer<typeof scheduledPaymentRequestWithSMSFormSchema>,
+    values: z.infer<typeof scheduledPaymentRequestFormSchema>,
   ) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions/${transaction.transaction_id}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions`,
       {
-        method: "PUT",
+        method: "POST",
         headers: {
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          requestMethods: ["SMS"],
+          requestMethods: ["WEB"],
           referenceNumber: values.referenceNumber,
-          mobileNumber: values.mobileNumber,
           amount: values.amount,
           currency: values.currency,
           paymentType: values.paymentType,
@@ -90,7 +85,7 @@ const ScheduledPaymentRequestWithSMSForm = () => {
     const data = await response.json();
 
     if (data.data.result === "success") {
-      toast("Payment request successfully updated", {
+      toast("Payment request successfully created", {
         icon: <Check className="w-5 text-green-600" />,
         position: "top-center",
       });
@@ -304,21 +299,6 @@ const ScheduledPaymentRequestWithSMSForm = () => {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="mobileNumber"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Mobile number</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormDescription>e.g., +1234567899900</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
 
         {form.formState.errors.root && (
@@ -340,4 +320,4 @@ const ScheduledPaymentRequestWithSMSForm = () => {
   );
 };
 
-export default ScheduledPaymentRequestWithSMSForm;
+export default ScheduledPaymentRequestWithWebForm;

@@ -12,6 +12,7 @@ import PaymentMethodList from "./PaymentMethodList";
 import ScheduledPaymentRequestWithSMSAndEmailForm from "./ScheduledPaymentRequestWithSMSAndEmailForm";
 import ScheduledPaymentRequestWithEmailForm from "./ScheduledPaymentRequestWithEmailForm";
 import ScheduledPaymentRequestWithSMSForm from "./ScheduledPaymentRequestWithSMSForm";
+import ScheduledPaymentRequestWithWebForm from "./ScheduledPaymentRequestWithWebForm";
 
 const ScheduledPaymentRequestCard = () => {
   const { requestMethods, step } = useScheduledEditPaymentContext();
@@ -33,6 +34,8 @@ const ScheduledPaymentRequestCard = () => {
           <ScheduledPaymentRequestWithEmailForm />
         ) : step === 2 && requestMethods?.includes("SMS") ? (
           <ScheduledPaymentRequestWithSMSForm />
+        ) : step === 2 && requestMethods?.includes("WEB") ? (
+          <ScheduledPaymentRequestWithWebForm />
         ) : (
           ""
         )}

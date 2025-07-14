@@ -92,7 +92,7 @@ const ScheduledPaymentRequestWithSMSAndEmailForm = () => {
     const data = await response.json();
 
     if (data.data.result === "success") {
-      toast("Payment request successfully created", {
+      toast("Payment request successfully updated", {
         icon: <Check className="w-5 text-green-600" />,
         position: "top-center",
       });
