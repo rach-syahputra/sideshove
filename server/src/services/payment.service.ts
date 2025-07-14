@@ -3,8 +3,13 @@ import { MP_ACCESS_KEY, MP_API_BASE_URL } from "../config";
 
 class PaymentService {
   getAll = async (req: GetPaymentsRequest) => {
+    const queryParams = new URLSearchParams();
+    if (req.page) queryParams.append("page", req.page.toString());
+    if (req.keywords) queryParams.append("keywords", req.keywords);
+    const query = queryParams.toString();
+
     const response = await fetch(
-      `${MP_API_BASE_URL}/payments?page=${req.page || 1}`,
+      `${MP_API_BASE_URL}/payments${query ? `?${query}` : ""}`,
       {
         method: "GET",
         headers: {

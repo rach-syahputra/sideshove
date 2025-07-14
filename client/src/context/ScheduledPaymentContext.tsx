@@ -10,7 +10,7 @@ import {
 
 import { TransactionRequestMethod } from "@/lib/types/transaction";
 
-interface IOnceOffPaymentContext {
+interface IScheduledPaymentContext {
   requestMethods: TransactionRequestMethod[] | null;
   setRequestMethods: Dispatch<
     SetStateAction<TransactionRequestMethod[] | null>
@@ -19,11 +19,11 @@ interface IOnceOffPaymentContext {
   setStep: Dispatch<SetStateAction<number>>;
 }
 
-const OnceOffPaymentContext = createContext<IOnceOffPaymentContext | undefined>(
-  undefined,
-);
+const ScheduledPaymentContext = createContext<
+  IScheduledPaymentContext | undefined
+>(undefined);
 
-const OnceOffPaymentProvider = ({
+const ScheduledPaymentProvider = ({
   children,
 }: {
   children: React.ReactNode;
@@ -34,7 +34,7 @@ const OnceOffPaymentProvider = ({
   const [step, setStep] = useState<number>(1);
 
   return (
-    <OnceOffPaymentContext.Provider
+    <ScheduledPaymentContext.Provider
       value={{
         requestMethods,
         setRequestMethods,
@@ -43,18 +43,18 @@ const OnceOffPaymentProvider = ({
       }}
     >
       {children}
-    </OnceOffPaymentContext.Provider>
+    </ScheduledPaymentContext.Provider>
   );
 };
 
-const useOnceOffPaymentContext = (): IOnceOffPaymentContext => {
-  const context = useContext(OnceOffPaymentContext);
+const useScheduledPaymentContext = (): IScheduledPaymentContext => {
+  const context = useContext(ScheduledPaymentContext);
   if (context === undefined) {
     throw new Error(
-      "useOnceOffPaymentContext must be used within a OnceOffPaymentProvider",
+      "useScheduledPaymentContext must be used within a ScheduledPaymentProvider",
     );
   }
   return context;
 };
 
-export { OnceOffPaymentProvider, useOnceOffPaymentContext };
+export { ScheduledPaymentProvider, useScheduledPaymentContext };

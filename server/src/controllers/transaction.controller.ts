@@ -11,6 +11,7 @@ class TransactionController {
 
   getAll = async (req: Request, res: Response, next: NextFunction) => {
     const { page } = req.query;
+
     try {
       const response = await this.transactionService.getAll({
         page: Number(page) || 1,
@@ -50,6 +51,10 @@ class TransactionController {
       currency,
       paymentType,
       mobileNumber,
+      paymentFrequency,
+      initialPaymentAmount,
+      paymentStartDate,
+      paymentEndDate,
     } = req.body;
 
     try {
@@ -61,6 +66,10 @@ class TransactionController {
         currency,
         paymentType,
         mobileNumber,
+        paymentFrequency,
+        initialPaymentAmount,
+        paymentStartDate,
+        paymentEndDate,
       });
 
       res.status(201).json({

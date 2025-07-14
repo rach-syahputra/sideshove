@@ -3,6 +3,12 @@ import { Pagination } from "./pagination";
 export type TransactionRequestMethodType = "SMS" | "EMAIL" | "WEB";
 export type CurrencyType = "ZAR" | "EUR" | "USD" | "GBP";
 export type PaymentType = "PA" | "DB" | "CP" | "RF" | "RV";
+export type PaymentFrequency =
+  | "ONE-TIME"
+  | "WEEKLY"
+  | "MONTHLY"
+  | "QUARTERLY"
+  | "YEARLY";
 
 export interface GetTransactionsRequest extends Pagination {}
 
@@ -18,6 +24,10 @@ export interface CreateTransactionRequest {
   amount: number;
   paymentType: PaymentType;
   mobileNumber: string;
+  initialPaymentAmount?: number;
+  paymentFrequency?: PaymentFrequency;
+  paymentStartDate?: string;
+  paymentEndDate?: string;
 }
 
 export interface UpdateTransactionRequest {

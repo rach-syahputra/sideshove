@@ -42,6 +42,10 @@ const DashboardSidebar = () => {
             href: "/merchant/once_off_payment_request",
             label: "Single Payment Request",
           },
+          {
+            href: "/merchant/scheduled_payment_request",
+            label: "Recurring Payment Request",
+          },
         ]}
       />
       <SidebarGroup

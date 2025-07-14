@@ -78,8 +78,7 @@ const PaymentTable = () => {
                       <TableCell>
                         {
                           <span
-                            className={cn("font-medium", {
-                              "text-gray-500": payment.payment_type === "CC.PA",
+                            className={cn("font-medium text-gray-600", {
                               "text-green-500":
                                 payment.payment_type === "CC.DB",
                               "text-yellow-500":

@@ -38,9 +38,12 @@ export const PAYMENT_TYPE_LABELS: Record<PaymentType, string> = {
   "CC.CP": "Capture",
   "CC.RF": "Refund",
   "CC.RV": "Reversal",
+  "CC.SD": "Scheduled",
+  "CC.RG": "Registration",
 };
 
 export const TRANSACTION_TYPE_LABELS: Record<TransactionType, string> = {
   "once-off": "Single",
-  "pos-payment": "Recurring",
+  "pos-payment": "Pos Payment",
+  scheduled: "Recurring",
 };

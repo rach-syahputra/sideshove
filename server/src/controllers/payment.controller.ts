@@ -10,10 +10,12 @@ class PaymentController {
   }
 
   getAll = async (req: Request, res: Response, next: NextFunction) => {
-    const { page } = req.query;
+    const { page, keywords } = req.query;
+
     try {
       const response = await this.paymentService.getAll({
         page: Number(page) || 1,
+        keywords: keywords?.toString(),
       });
 
       res.status(200).json({

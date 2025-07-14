@@ -28,9 +28,11 @@ export type PaymentType =
   | "CC.PA"
   | "CC.CP"
   | "CC.RF"
-  | "CC.RV";
+  | "CC.RV"
+  | "CC.SD"
+  | "CC.RG";
 
-export type TransactionType = "once-off" | "pos-payment";
+export type TransactionType = "once-off" | "pos-payment" | "scheduled";
 
 export interface Transaction {
   attach_recepit_on_email: boolean;

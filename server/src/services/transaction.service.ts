@@ -9,8 +9,12 @@ import { MP_ACCESS_KEY, MP_API_BASE_URL } from "../config";
 
 class TransactionService {
   getAll = async (req: GetTransactionsRequest) => {
+    const queryParams = new URLSearchParams();
+    if (req.page) queryParams.append("page", req.page.toString());
+    const query = queryParams.toString();
+
     const response = await fetch(
-      `${MP_API_BASE_URL}/payment-requests?page=${req.page || 1}`,
+      `${MP_API_BASE_URL}/payment-requests${query ? `?${query}` : ""}`,
       {
         method: "GET",
         headers: {
@@ -50,6 +54,14 @@ class TransactionService {
       fixed_amount: true,
       payment_type: req.paymentType,
       mobile_number: req.mobileNumber,
+      payment_frequency: req.paymentFrequency || "ONE-TIME",
+      ...(req.initialPaymentAmount
+        ? { initial_payment_amount: req.initialPaymentAmount }
+        : {}),
+      ...(req.paymentStartDate
+        ? { payment_start_date: req.paymentStartDate }
+        : {}),
+      ...(req.paymentEndDate ? { payment_end_date: req.paymentEndDate } : {}),
     };
 
     const response = await fetch(`${MP_API_BASE_URL}/payment-requests`, {

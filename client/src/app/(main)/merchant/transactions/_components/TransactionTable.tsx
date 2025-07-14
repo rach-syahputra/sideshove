@@ -104,13 +104,9 @@ const TransactionTable = () => {
                           <span className="font-medium text-orange-500 uppercase">
                             ACTIVE
                           </span>
-                        ) : transaction.status === "success" ? (
-                          <span className="font-medium text-green-500 uppercase">
-                            {transaction.status}
-                          </span>
                         ) : (
-                          <span className="font-medium text-red-500 uppercase">
-                            {transaction.status}
+                          <span className="font-medium text-green-500 uppercase">
+                            SUCCESS
                           </span>
                         )}
                       </TableCell>
