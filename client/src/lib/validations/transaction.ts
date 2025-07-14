@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // once-off payment request
-const onceOffPaymentRequestFormSchema = z.object({
+export const onceOffPaymentRequestFormSchema = z.object({
   referenceNumber: z.string().optional(),
   currency: z.enum(["ZAR", "EUR", "USD", "GBP"], {
     message: "Invalid currency",

@@ -52,7 +52,7 @@ export const getRequestMethods = (
   } else if (methods.includes("SMS")) {
     method = "SMS";
   } else {
-    method = "Unknown";
+    method = "-";
   }
 
   return method;

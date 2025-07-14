@@ -12,6 +12,7 @@ import NextButton from "./NextButton";
 import PaymentMethodList from "./PaymentMethodList";
 import OnceOffPaymentRequestWithSMSForm from "./OnceOffPaymentRequestWithSMSForm";
 import OnceOffPaymentRequestWithSMSAndEmailForm from "./OnceOffPaymentRequestWithSMSAndEmailForm";
+import OnceOffPaymentRequestWithWebForm from "./OnceOffPaymentRequestWithWebForm";
 
 const OnceOffPaymentRequestCard = () => {
   const { requestMethods, step } = useOnceOffPaymentContext();
@@ -33,6 +34,8 @@ const OnceOffPaymentRequestCard = () => {
           <OnceOffPaymentRequestWithEmailForm />
         ) : step === 2 && requestMethods?.includes("SMS") ? (
           <OnceOffPaymentRequestWithSMSForm />
+        ) : step === 2 && requestMethods?.includes("WEB") ? (
+          <OnceOffPaymentRequestWithWebForm />
         ) : (
           ""
         )}
